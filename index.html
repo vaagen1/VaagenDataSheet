@@ -1,0 +1,3181 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VaagenCal V22</title><style>body{font-family:-apple-system,Arial,sans-serif;background:#f3f4f6;margin:0;padding:10px}.app{max-width:430px;margin:auto;background:#fff;border-radius:14px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.12)}.row{display:flex;align-items:center;gap:6px;margin-bottom:8px}.label{width:80px;font-size:13px}.grow{flex:1}.field{padding:7px;border:1px solid #d0d0d0;border-radius:4px;box-sizing:border-box}.btn{border:none;border-radius:5px;padding:8px 10px;background:#7D97AB;color:#fff;font-size:12px}.btn-del{background:#A56C6C}.toptag{flex:1}.instrument{display:grid;grid-template-columns:1fr 1fr;gap:8px}.panel{border:1px solid #d9d9d9;border-radius:8px;padding:8px}.instrument .panel:nth-child(1){border:none;padding:0}.instrument .panel:nth-child(2){border:none;padding:0}.panel label{display:block;font-size:12px;margin-bottom:2px}.panel input,.panel select{width:70%;padding:7px;margin-bottom:6px;border:1px solid #d0d0d0;border-radius:4px;display:block;margin-left:auto}.panel select{margin-top:14px}.unit-labelbox{width:70%;padding:7px;margin-bottom:6px;border:1px solid #d0d0d0;border-radius:4px;box-sizing:border-box;margin-left:auto;background:#fff;font-size:13px}.tt{width:100%;border-collapse:collapse}.tt th,.tt td{border:1px solid #d9d9d9;padding:6px;font-size:13px}.tt th{background:#f5f5f5}.tg{background:#f7f7f7;text-align:center}.ma{background:#ececec;text-align:center}.val input{width:100%;border:none;text-align:center;padding:0;margin:0;height:20px;box-sizing:border-box;background:transparent}.cal{margin-top:10px}.cal table{width:100%;border-collapse:collapse}.cal td{border:1px solid #d9e5d9;background:#f2f8f2;padding:6px 4px;text-align:center;font-size:13px}.cal .l{text-align:left;padding-left:8px;width:24%}.test{margin-top:10px;background:#eef5fb;border:1px solid #d8e4ef;border-radius:8px;padding:8px}.testrow{display:flex;align-items:center;justify-content:space-between}.tbtn{width:42px;height:34px;border:none;border-radius:5px;background:#7D97AB;color:#fff}.vals{flex:1;text-align:center}.slider{text-align:center;color:#7D97AB;font-size:18px;margin-top:4px}.unit-row-label{background:#f7f7f7;text-align:center;border:1px solid #d9d9d9;padding:6px;font-size:13px;box-sizing:border-box;width:70%;margin-left:auto;margin-bottom:2px}.unit-inline{display:flex;align-items:center;gap:6px}.unit-inline label{display:block;font-size:12px;margin-bottom:0}.unit-inline .unit-labelbox{width:70%;margin-left:auto;margin-bottom:6px}.urv-block{margin-top:30px;display:flex;align-items:center;gap:6px}.urv-block label{display:block;font-size:12px;margin-bottom:0}.urv-block input{width:70%;padding:7px;margin-bottom:6px;border:1px solid #d0d0d0;border-radius:4px;display:block;margin-left:auto;box-sizing:border-box}
+.align-left-panel{border:none!important;padding:0!important}
+.align-left-panel .ll-spacer{height:33px}
+.align-left-panel .unit-inline,
+.align-left-panel .lrv-block,
+.align-left-panel .urv-block{display:flex!important;align-items:center!important;gap:6px!important;margin-top:0!important;margin-bottom:0!important;height:33px!important;box-sizing:border-box!important}
+.align-left-panel label{display:block!important;font-size:12px!important;margin:0!important;width:32px!important}
+.align-left-panel input,
+.align-left-panel .unit-labelbox{width:70%!important;padding:7px!important;border:1px solid #d0d0d0!important;border-radius:4px!important;box-sizing:border-box!important;margin:0 0 0 auto!important;background:#fff!important;font-size:13px!important}
+
+.ll-buttons{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:4px!important;height:33px!important;box-sizing:border-box!important}
+.ll-buttons .mini-btn{border:none;border-radius:5px;padding:7px 9px;background:#7D97AB;color:#fff;font-size:12px}
+.ll-buttons .mini-btn.btn-del{background:#A56C6C}
+.loc-row .label{width:28px}.tag-row .label,.des-row .label{width:32px}
+/* V23: move Unit/LRV/URV boxes left to align better with Tag/Des */
+.align-left-panel .unit-inline,
+.align-left-panel .lrv-block,
+.align-left-panel .urv-block{justify-content:flex-start!important}
+.align-left-panel label{width:32px!important;flex:0 0 32px!important}
+.align-left-panel input,
+.align-left-panel .unit-labelbox{margin-left:0!important;width:70%!important}
+
+/* V27: slider longer - from outer edge under minus to outer edge under plus */
+.test{padding-left:8px;padding-right:8px}
+.slider{width:100%;box-sizing:border-box;text-align:justify;letter-spacing:1px;font-size:18px;line-height:20px}
+.slider:after{content:'';display:inline-block;width:100%}
+
+/* V28: modern slider, almost white at 4mA and blue-gray at 20mA */
+.modern-slider{
+  width:100%;
+  height:22px;
+  margin-top:6px;
+  appearance:none;
+  -webkit-appearance:none;
+  background:#dfe9ef;
+  border-radius:999px;
+  outline:none;
+  box-sizing:border-box;
+}
+.modern-slider::-webkit-slider-thumb{
+  appearance:none;
+  -webkit-appearance:none;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#7D97AB;
+  border:2px solid #ffffff;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
+}
+.modern-slider::-moz-range-thumb{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:#7D97AB;
+  border:2px solid #ffffff;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
+}
+
+/* V31: text field above slider follows slider color */
+.vals{
+  border-radius:6px;
+  padding:6px 8px;
+  margin:0 8px;
+  box-sizing:border-box;
+  transition:background-color .12s linear;
+}
+
+/* V35: move slider slightly down to keep value field visible while adjusting */
+.modern-slider{
+  margin-top:14px!important;
+}
+
+/* V36: left middle rows aligned with trigger table rows: Unit=LL, LRV=L, URV=H, RA=HH */
+.align-left-panel .ra-block{display:flex!important;align-items:center!important;gap:6px!important;margin-top:0!important;margin-bottom:0!important;height:33px!important;box-sizing:border-box!important;justify-content:flex-start!important}
+.align-left-panel .ra-block label{display:block!important;font-size:12px!important;margin:0!important;width:32px!important;flex:0 0 32px!important}
+.align-left-panel .ra-block input{width:70%!important;padding:7px!important;border:1px solid #d0d0d0!important;border-radius:4px!important;box-sizing:border-box!important;margin:0!important;background:#fff!important;font-size:13px!important}
+
+/* V42: modern compact Location dialog */
+.vc-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(30,40,48,.28);
+  display:none;
+  align-items:flex-start;
+  justify-content:center;
+  padding-top:7vh;
+  z-index:9999;
+  backdrop-filter:blur(2px);
+}
+.vc-modal-overlay.is-open{display:flex}
+.vc-modal-card{
+  width:min(340px,calc(100vw - 28px));
+  background:#ffffff;
+  border:1px solid #d8e4ef;
+  border-radius:18px;
+  box-shadow:0 14px 40px rgba(0,0,0,.22);
+  padding:14px;
+  box-sizing:border-box;
+  transform:translateY(-8px) scale(.98);
+  opacity:0;
+  transition:opacity .16s ease, transform .16s ease;
+}
+.vc-modal-overlay.is-open .vc-modal-card{opacity:1;transform:translateY(0) scale(1)}
+.vc-modal-title{font-size:16px;font-weight:700;margin-bottom:3px;color:#26343d}
+.vc-modal-sub{font-size:12px;color:#667782;margin-bottom:12px}
+.vc-modal-field{
+  width:100%;
+  border:1px solid #cfdbe5;
+  border-radius:12px;
+  padding:12px 13px;
+  font-size:18px;
+  box-sizing:border-box;
+  outline:none;
+  background:#f8fbfd;
+}
+.vc-modal-field:focus{border-color:#9bb4c7;box-shadow:0 0 0 3px rgba(125,151,171,.18);background:#fff}
+.vc-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.vc-modal-btn{border:none;border-radius:10px;padding:10px 14px;font-size:13px}
+.vc-modal-cancel{background:#edf2f5;color:#33424c}
+.vc-modal-ok{background:#7D97AB;color:#fff}
+.loc-select.flash-new{
+  animation:vcSettleIntoPlace 1.15s cubic-bezier(.22,.8,.25,1);
+  transform-origin:center;
+}
+@keyframes vcSettleIntoPlace{
+  0%{
+    transform:translateY(-10px) scale(1.035);
+    background:#edf6fb;
+    box-shadow:0 10px 22px rgba(125,151,171,.28),0 0 0 0 rgba(125,151,171,.35);
+  }
+  45%{
+    transform:translateY(2px) scale(1.01);
+    background:#f8fbfd;
+    box-shadow:0 4px 12px rgba(125,151,171,.18),0 0 0 7px rgba(125,151,171,.12);
+  }
+  100%{
+    transform:translateY(0) scale(1);
+    background:#ffffff;
+    box-shadow:0 0 0 0 rgba(125,151,171,0),0 0 0 0 rgba(125,151,171,0);
+  }
+}
+
+/* V47: Unit is writable */
+.unit-input{
+  display:block!important;
+  text-align:center;
+  outline:none;
+}
+.unit-input:focus{
+  border-color:#9bb4c7!important;
+  box-shadow:0 0 0 3px rgba(125,151,171,.18);
+  background:#fff;
+}
+
+/* V48: Location duplicate stop message */
+.vc-modal-message{
+  min-height:16px;
+  margin-top:7px;
+  font-size:12px;
+  color:#A56C6C;
+}
+.vc-modal-field.duplicate-stop{
+  border-color:#A56C6C!important;
+  box-shadow:0 0 0 3px rgba(165,108,108,.14)!important;
+  animation:vcShake .22s ease;
+}
+@keyframes vcShake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-3px)}
+  75%{transform:translateX(3px)}
+}
+
+/* V50: keep right trigger table inside layout when values are blank */
+.instrument > .panel{
+  min-width:0;
+  overflow:hidden;
+}
+.tt{
+  table-layout:fixed!important;
+  width:100%!important;
+  max-width:100%!important;
+}
+.tt td,.tt th{
+  box-sizing:border-box;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.tt td.tg{width:28%;}
+.tt td.val{width:42%;}
+.tt td.ma{width:30%;}
+.tt .val input{
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:hidden;
+}
+.instrument{
+  min-width:0;
+}
+
+/* V52: weak yellow on middle section and Description field */
+.instrument{
+  background:#fffbe8;
+  border-radius:10px;
+  padding:6px;
+  box-sizing:border-box;
+}
+.des-row input{
+  background:#fffbe8!important;
+}
+
+/* V53: frame around Description + middle section */
+.des-row{
+  background:#fffbe8;
+  border:1px solid #efe4a8;
+  border-bottom:none;
+  border-radius:10px 10px 0 0;
+  padding:6px;
+  margin-bottom:0!important;
+  box-sizing:border-box;
+}
+.des-row .label{
+  background:#fffbe8;
+}
+.des-row input{
+  background:#fffbe8!important;
+}
+.instrument{
+  background:#fffbe8;
+  border:1px solid #efe4a8;
+  border-top:none;
+  border-radius:0 0 10px 10px;
+  padding:8px 6px 6px 6px;
+  margin-top:0;
+  margin-bottom:8px;
+  box-sizing:border-box;
+}
+
+/* V54: yellow boxes and labels in middle section */
+.instrument .panel label,
+.instrument .unit-inline label,
+.instrument .lrv-block label,
+.instrument .urv-block label,
+.instrument .ra-block label{
+  background:#fffbe8;
+}
+.instrument input,
+.instrument select,
+.instrument .unit-labelbox,
+.instrument .tt td,
+.instrument .tt th,
+.instrument .tg,
+.instrument .ma{
+  background:#fffbe8!important;
+}
+.instrument .tt td,
+.instrument .tt th{
+  border-color:#efe4a8;
+}
+.instrument input{
+  border-color:#efe4a8!important;
+}
+.instrument .tt .val input{
+  background:#fffbe8!important;
+}
+
+/* V55: RA explicitly yellow */
+.ra-block,
+.ra-block label,
+.ra-block input,
+.ra-block input[readonly]{
+  background:#fffbe8!important;
+}
+.ra-block input,
+.ra-block input[readonly]{
+  border-color:#efe4a8!important;
+}
+
+/* V56: wider middle trigger table, pulled slightly left */
+.instrument{
+  grid-template-columns:0.88fr 1.12fr!important;
+  column-gap:6px!important;
+}
+
+/* V57: H HH L LL cells as narrow as possible */
+.instrument .tt td.tg{
+  width:18%!important;
+  min-width:28px!important;
+  padding-left:2px!important;
+  padding-right:2px!important;
+  white-space:nowrap!important;
+}
+.instrument .tt td.val{
+  width:48%!important;
+}
+.instrument .tt td.ma{
+  width:34%!important;
+}
+
+/* V58: trigger table wider one more step toward left */
+.instrument{
+  grid-template-columns:0.80fr 1.20fr!important;
+  column-gap:4px!important;
+}
+
+/* V60: Tag + form dialog */
+.tag-modal-card{
+  width:min(390px,calc(100vw - 24px));
+  max-width:390px;
+}
+.tag-form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:6px;
+}
+.tag-form-row{margin-bottom:8px;}
+.tag-form-row label,
+.tag-form-block-title{
+  display:block;
+  font-size:12px;
+  color:#40515c;
+  margin-bottom:3px;
+  font-weight:600;
+}
+.tag-form-input{
+  width:100%;
+  min-height:36px;
+  padding:8px;
+  border:1px solid #d0d0d0;
+  border-radius:8px;
+  box-sizing:border-box;
+  font-size:13px;
+  background:#fff;
+}
+.tag-alarm-grid{
+  display:grid;
+  grid-template-columns:30px 1fr;
+  gap:6px;
+  align-items:center;
+}
+.tag-alarm-grid label{
+  font-size:12px;
+  font-weight:700;
+  color:#40515c;
+  text-align:center;
+}
+.tag-modal-message{
+  min-height:15px;
+  margin-top:6px;
+  font-size:12px;
+  color:#9a4f4f;
+}
+
+/* V62: lift Tag + form slightly upward */
+#tagAddModal{
+  align-items:flex-start!important;
+  padding-top:44px!important;
+  box-sizing:border-box;
+}
+#tagAddModal .tag-modal-card{
+  margin-top:0!important;
+}
+
+/* V63: Tag + buttons moved to top right */
+.tag-modal-topbar{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.tag-modal-topbar .vc-modal-sub{
+  margin-bottom:0!important;
+}
+.tag-top-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  flex-shrink:0;
+  padding-top:0;
+}
+.tag-top-actions .vc-modal-btn{
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:12px;
+  min-width:58px;
+}
+
+/* V64: form further up, buttons lower, Save left / Cancel right */
+#tagAddModal{
+  padding-top:28px!important;
+}
+#tagAddModal .tag-top-actions{
+  padding-top:16px!important;
+}
+
+/* V65: compact Tag + header */
+#tagAddModal .tag-modal-topbar{
+  margin-bottom:4px!important;
+  align-items:flex-start!important;
+}
+#tagAddModal .vc-modal-title{
+  margin-top:4px!important;
+}
+#tagAddModal .tag-top-actions{
+  padding-top:8px!important;
+}
+#tagAddModal .tag-form-row:first-of-type{
+  margin-top:0!important;
+}
+
+/* V66: visible alarm checkboxes in Tag + form */
+#tagAddModal .tag-alarm-grid-checks{
+  grid-template-columns:22px 30px 1fr!important;
+  column-gap:5px!important;
+  row-gap:6px!important;
+}
+#tagAddModal .tag-alarm-check{
+  width:18px!important;
+  height:18px!important;
+  margin:0!important;
+  accent-color:#7D97AB;
+}
+
+/* V67: alarm values disabled until checkbox is active */
+#tagAddModal .tag-alarm-value:disabled{
+  background:#eeeeee!important;
+  color:#8a8a8a!important;
+  border-color:#d6d6d6!important;
+  cursor:not-allowed;
+}
+#tagAddModal .tag-alarm-value.alarm-enabled{
+  background:#ffffff!important;
+  color:#222!important;
+  border-color:#9bb4c7!important;
+}
+#tagAddModal .tag-alarm-check:checked + .tag-alarm-value{
+  background:#ffffff!important;
+  color:#222!important;
+  border-color:#9bb4c7!important;
+}
+
+/* V68: alarm checkboxes between label and value */
+#tagAddModal .tag-alarm-grid-checks{
+  grid-template-columns:30px 22px 1fr!important;
+}
+
+/* V72: main sheet Unit value must be left aligned */
+.instrument .unit-input,
+.align-left-panel .unit-labelbox.unit-input{
+  text-align:left!important;
+}
+
+/* V73: shorten main Tag input about 20% */
+.tag-row .toptag{
+  flex:0 1 80%!important;
+  max-width:80%!important;
+  min-width:0!important;
+}
+
+/* V74: visible shortening of main Tag input from the right side */
+.tag-row .toptag{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  margin-right:28px!important;
+}
+
+/* V75: additional shortening */
+.tag-row .toptag{
+  margin-right:56px!important;
+}
+
+/* V77: wider Tag field while keeping Search button */
+.tag-row .toptag{
+  margin-right:28px!important;
+}
+
+/* V79: keep Tag box unchanged, move button group closer to it */
+.tag-row .tag-add-btn,
+.tag-row .tag-search-btn,
+.tag-row .tag-edit-btn,
+.tag-row .btn-del{
+  transform:translateX(-22px)!important;
+}
+
+/* V81: white background on search icon button */
+.tag-row .tag-search-btn{
+  background:#fff!important;
+  color:#3f5668!important;
+  border:1px solid #7D97AB!important;
+}
+
+/* V82: dark gray search symbol */
+.tag-search-btn{color:#444!important;font-weight:600!important;}
+
+/* V83: real dark gray SVG search icon */
+.tag-row .tag-search-btn{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.tag-search-icon{
+  width:17px!important;
+  height:17px!important;
+  stroke:#444!important;
+  stroke-width:2.4!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  display:block!important;
+}
+
+/* V84: same SVG outline style for Tag + button */
+.tag-row .tag-add-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.tag-plus-icon{
+  width:17px!important;
+  height:17px!important;
+  stroke:#444!important;
+  stroke-width:2.6!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  display:block!important;
+}
+
+/* V85: SVG edit icon in same style */
+.tag-edit-icon{width:17px!important;height:17px!important;stroke:#444!important;stroke-width:2.1!important;fill:none!important;stroke-linecap:round!important;stroke-linejoin:round!important;display:block!important;}
+
+/* V86: give SVG Edit button same white outline button background */
+.loc-edit-btn,
+.location-edit-btn,
+.edit-location-btn,
+.tag-row .tag-edit-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+/* V89: lighter, more open edit pencil icon */
+.tag-edit-icon-light{
+  width:18px!important;
+  height:18px!important;
+  stroke:#444!important;
+  stroke-width:1.75!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  display:block!important;
+}
+
+/* V90: larger light pencil icon only */
+.tag-edit-icon-light{
+  width:18px!important;
+  height:18px!important;
+  transform:scale(1.22)!important;
+  transform-origin:center center!important;
+}
+
+/* V91: Tag-line Edit gets same white SVG button style */
+.tag-row .tag-edit-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+/* V92: Tag-line Delete gets same white SVG button style */
+.tag-row .tag-del-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.tag-del-icon{
+  width:18px!important;
+  height:18px!important;
+  stroke:#444!important;
+  stroke-width:1.9!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  display:block!important;
+}
+
+/* V93: visual test - larger Tag delete trash icon only */
+.tag-row .tag-del-icon{
+  width:24px!important;
+  height:24px!important;
+}
+
+/* V94: top Location + button same white SVG style, 24px icon */
+.loc-row .loc-add-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.loc-plus-icon{
+  width:24px!important;
+  height:24px!important;
+  stroke:#444!important;
+  stroke-width:2.6!important;
+  fill:none!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+  display:block!important;
+}
+
+/* V95: unify toolbar icons to 22px */
+.loc-plus-icon,
+.tag-plus-icon,
+.tag-search-icon,
+.tag-edit-icon,
+.tag-del-icon{
+  width:22px!important;
+  height:22px!important;
+}
+</style></head><body><div class='app'><div class='row loc-row'><div class='label'>Loc</div><select class='grow field loc-select'></select><button class='btn loc-add-btn' type='button'><svg class='loc-plus-icon' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><line x1='12' y1='5' x2='12' y2='19'></line><line x1='5' y1='12' x2='19' y2='12'></line></svg></button><button class='btn loc-edit-btn' type='button'><svg class='tag-edit-icon tag-edit-icon-light' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><line x1='20' y1='12' x2='6' y2='12'></line><line x1='12' y1='6' x2='6' y2='12'></line><line x1='12' y1='18' x2='6' y2='12'></line></svg></button></div><div class='row tag-row'><div class='label'>Tag</div><input class='field toptag' value=''><button class='btn tag-add-btn' type='button'><svg class='tag-plus-icon' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><line x1='12' y1='5' x2='12' y2='19'></line><line x1='5' y1='12' x2='19' y2='12'></line></svg></button><button class='btn tag-search-btn' type='button'><svg class='tag-search-icon' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><line x1='4' y1='12' x2='18' y2='12'></line><line x1='12' y1='6' x2='18' y2='12'></line><line x1='12' y1='18' x2='18' y2='12'></line></svg></button><button class='btn tag-edit-btn' type='button'><svg class='tag-edit-icon tag-edit-icon-light' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><path d='M5 19l3.5-.8L18.6 8.1l-2.7-2.7L5.8 15.5 5 19z'></path><path d='M14.8 6.5l2.7 2.7'></path></svg></button><button class='btn btn-del tag-del-btn' type='button'><svg class='tag-del-icon' viewBox='0 0 24 24' aria-hidden='true' focusable='false'><circle cx='6' cy='12' r='1.8' fill='#444'></circle><circle cx='12' cy='12' r='1.8' fill='#444'></circle><circle cx='18' cy='12' r='1.8' fill='#444'></circle></svg></button></div><div class='row des-row'><div class='label'>Des</div><input class='field grow' value=''></div><div class='instrument'><div class='panel align-left-panel'><div class='unit-inline'><label>Unit</label><input class='unit-labelbox unit-input' value='' autocomplete='off'></div><div class='lrv-block'><label>LRV</label><input value=''></div><div class='urv-block'><label>URV</label><input value=''></div><div class='ra-block'><label>RA</label><input value='' readonly></div></div><div class='panel'><table class='tt'><tr><td class='tg'>H</td><td class='val'><input value=''></td><td class='ma'></td></tr><tr><td class='tg'>HH</td><td class='val'><input value=''></td><td class='ma'></td></tr><tr><td class='tg'>L</td><td class='val'><input value=''></td><td class='ma'></td></tr><tr><td class='tg'>LL</td><td class='val'><input value=''></td><td class='ma'></td></tr></table></div></div><div class='cal'><table><tr><td class='l'>Percent</td><td>0%</td><td>25%</td><td>50%</td><td>75%</td><td>100%</td></tr><tr><td class='l'>Milliampere</td><td>4,00</td><td>8,00</td><td>12,00</td><td>16,00</td><td>20,00</td></tr><tr><td class='l'>Unit</td><td></td><td></td><td></td><td></td><td></td></tr></table></div><div class='test'><div class='testrow'><button class='tbtn'>−</button><div class='vals'></div><button class='tbtn'>+</button></div><input class='modern-slider' type='range' min='4' max='20' step='0.01' value='12' aria-label='mA slider'></div></div>
+
+<script>
+(function(){
+  const slider = document.querySelector('.modern-slider');
+  if(!slider) return;
+
+  function mix(a, b, t){ return Math.round(a + (b-a)*t); }
+  function colorAt(t){
+    // 4mA = almost white, 20mA = light frame-like blue-gray (#d8e4ef)
+    const r = mix(248, 216, t);
+    const g = mix(251, 228, t);
+    const b = mix(253, 239, t);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function updateSliderColor(){
+    const min = parseFloat(slider.min || 4);
+    const max = parseFloat(slider.max || 20);
+    const val = parseFloat(slider.value || min);
+    const t = Math.max(0, Math.min(1, (val - min) / (max - min)));
+    const c = colorAt(t);
+    slider.style.background = c;
+    const vals = document.querySelector('.vals');
+    if(vals) vals.style.backgroundColor = c;
+  }
+
+  slider.addEventListener('input', updateSliderColor);
+  slider.addEventListener('change', updateSliderColor);
+  updateSliderColor();
+})();
+</script>
+
+
+<script>
+(function(){
+  const slider = document.querySelector('.modern-slider');
+  const minusBtn = document.querySelector('.testrow .tbtn:first-child');
+  const plusBtn = document.querySelector('.testrow .tbtn:last-child');
+  const vals = document.querySelector('.vals');
+  if(!slider || !minusBtn || !plusBtn) return;
+
+  // Make each button press visible. Slider still has fine internal resolution.
+  slider.step = '0.1';
+
+  let repeatTimer = null;
+  let repeatDelay = null;
+
+  function formatNo(v){
+    return Number(v).toFixed(2).replace('.', ',');
+  }
+
+  function parseNo(value){
+    if(value === null || value === undefined) return NaN;
+    return parseFloat(String(value).replace(/\s/g,'').replace(',', '.'));
+  }
+
+  function updateText(){
+    const mA = parseFloat(slider.value || 12);
+    const leftPanel = document.querySelector('.align-left-panel');
+    const lrvInput = leftPanel ? leftPanel.querySelector('.lrv-block input') : null;
+    const raInput = leftPanel ? leftPanel.querySelector('.ra-block input') : null;
+    const lrv = lrvInput ? parseNo(lrvInput.value) : NaN;
+    const ra = raInput ? parseNo(raInput.value) : NaN;
+    const pv = (Number.isFinite(lrv) && Number.isFinite(ra)) ? lrv + ((mA - 4) / 16) * ra : NaN;
+    const unitInput = document.querySelector('.unit-input');
+    const unit = unitInput ? String(unitInput.value || '').trim() : '';
+    if(vals) vals.textContent = formatNo(pv) + (unit ? ' ' + unit : '') + '   ' + formatNo(mA) + ' mA';
+  }
+
+  function move(direction){
+    const min = parseFloat(slider.min || 4);
+    const max = parseFloat(slider.max || 20);
+    const step = parseFloat(slider.step || 0.1);
+    let value = parseFloat(slider.value || min);
+    value = Math.max(min, Math.min(max, value + direction * step));
+    slider.value = value.toFixed(2);
+    slider.dispatchEvent(new Event('input', {bubbles:true}));
+    updateText();
+  }
+
+  function stop(){
+    if(repeatDelay){ clearTimeout(repeatDelay); repeatDelay = null; }
+    if(repeatTimer){ clearInterval(repeatTimer); repeatTimer = null; }
+  }
+
+  function start(direction){
+    stop();
+    move(direction); // one step immediately
+    repeatDelay = setTimeout(function(){
+      repeatTimer = setInterval(function(){ move(direction); }, 80);
+    }, 300);
+  }
+
+  function bind(btn, direction){
+    btn.style.touchAction = 'none';
+    btn.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      start(direction);
+    });
+  }
+
+  bind(minusBtn, -1);
+  bind(plusBtn, 1);
+
+  document.addEventListener('pointerup', stop);
+  document.addEventListener('pointercancel', stop);
+  document.addEventListener('pointerleave', stop);
+
+  slider.addEventListener('input', updateText);
+  updateText();
+})();
+</script>
+
+<script>
+(function(){
+  const leftPanel = document.querySelector('.align-left-panel');
+  if(!leftPanel) return;
+
+  const lrvInput = leftPanel.querySelector('.lrv-block input');
+  const urvInput = leftPanel.querySelector('.urv-block input');
+  const raInput = leftPanel.querySelector('.ra-block input');
+  if(!lrvInput || !urvInput || !raInput) return;
+
+  function parseNo(value){
+    if(value === null || value === undefined) return NaN;
+    return parseFloat(String(value).replace(/\s/g,'').replace(',', '.'));
+  }
+
+  function formatNo(value){
+    if(!Number.isFinite(value)) return '';
+    return value.toFixed(2).replace('.', ',');
+  }
+
+  function updateRA(){
+    const lrv = parseNo(lrvInput.value);
+    const urv = parseNo(urvInput.value);
+    const ra = urv - lrv;
+    raInput.value = formatNo(ra);
+  }
+
+  lrvInput.addEventListener('input', updateRA);
+  urvInput.addEventListener('input', updateRA);
+  lrvInput.addEventListener('change', updateRA);
+  urvInput.addEventListener('change', updateRA);
+  updateRA();
+})();
+</script>
+
+<script>
+(function(){
+  const leftPanel = document.querySelector('.align-left-panel');
+  const slider = document.querySelector('.modern-slider');
+  if(!leftPanel || !slider) return;
+  const lrvInput = leftPanel.querySelector('.lrv-block input');
+  const urvInput = leftPanel.querySelector('.urv-block input');
+  function refreshSliderText(){
+    slider.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+  if(lrvInput){ lrvInput.addEventListener('input', refreshSliderText); lrvInput.addEventListener('change', refreshSliderText); }
+  if(urvInput){ urvInput.addEventListener('input', function(){ setTimeout(refreshSliderText,0); }); urvInput.addEventListener('change', function(){ setTimeout(refreshSliderText,0); }); }
+  refreshSliderText();
+})();
+</script>
+
+<script>
+(function(){
+  const leftPanel = document.querySelector('.align-left-panel');
+  const calTable = document.querySelector('.cal table');
+  if(!leftPanel || !calTable) return;
+
+  const unitBox = leftPanel.querySelector('.unit-labelbox');
+  const lrvInput = leftPanel.querySelector('.lrv-block input');
+  const urvInput = leftPanel.querySelector('.urv-block input');
+  const raInput = leftPanel.querySelector('.ra-block input');
+  const rows = calTable.querySelectorAll('tr');
+  const valueRow = rows[2];
+  if(!lrvInput || !urvInput || !raInput || !valueRow) return;
+
+  function parseNo(value){
+    if(value === null || value === undefined) return NaN;
+    return parseFloat(String(value).replace(/\s/g,'').replace(',', '.'));
+  }
+
+  function formatNo(value){
+    if(!Number.isFinite(value)) return '';
+    return value.toFixed(2).replace('.', ',');
+  }
+
+  function updateGreenLastRow(){
+    const unit = unitBox && (unitBox.value !== undefined ? unitBox.value : unitBox.textContent).trim() ? (unitBox.value !== undefined ? unitBox.value : unitBox.textContent).trim() : 'Unit';
+    const lrv = parseNo(lrvInput.value);
+    const ra = parseNo(raInput.value);
+    const cells = valueRow.querySelectorAll('td');
+    const percents = [0, 0.25, 0.50, 0.75, 1.00];
+    if(cells.length < 6) return;
+    cells[0].textContent = unit;
+    for(let i=0; i<percents.length; i++){
+      cells[i+1].textContent = formatNo(lrv + percents[i] * ra);
+    }
+  }
+
+  lrvInput.addEventListener('input', function(){ setTimeout(updateGreenLastRow, 0); });
+  urvInput.addEventListener('input', function(){ setTimeout(updateGreenLastRow, 0); });
+  lrvInput.addEventListener('change', function(){ setTimeout(updateGreenLastRow, 0); });
+  urvInput.addEventListener('change', function(){ setTimeout(updateGreenLastRow, 0); });
+  updateGreenLastRow();
+})();
+</script>
+
+<script>
+(function(){
+  const leftPanel = document.querySelector('.align-left-panel');
+  const triggerTable = document.querySelector('.tt');
+  if(!leftPanel || !triggerTable) return;
+
+  const lrvInput = leftPanel.querySelector('.lrv-block input');
+  const raInput = leftPanel.querySelector('.ra-block input');
+  if(!lrvInput || !raInput) return;
+
+  function parseNo(value){
+    if(value === null || value === undefined) return NaN;
+    return parseFloat(String(value).replace(/\s/g,'').replace(',', '.'));
+  }
+
+  function formatNo(value){
+    if(!Number.isFinite(value)) return '';
+    return value.toFixed(2).replace('.', ',');
+  }
+
+  function updateTriggerMA(){
+    const lrv = parseNo(lrvInput.value);
+    const ra = parseNo(raInput.value);
+    const rows = triggerTable.querySelectorAll('tr');
+    rows.forEach(function(row){
+      const valueInput = row.querySelector('td.val input');
+      const maCell = row.querySelector('td.ma');
+      if(!valueInput || !maCell) return;
+      const rawPv = String(valueInput.value || '').trim();
+      if(rawPv === ''){
+        maCell.textContent = '';
+        return;
+      }
+      const pv = parseNo(rawPv);
+      const ma = (Number.isFinite(pv) && Number.isFinite(lrv) && Number.isFinite(ra) && ra !== 0)
+        ? 4 + ((pv - lrv) / ra) * 16
+        : NaN;
+      maCell.textContent = Number.isFinite(ma) ? formatNo(ma) + ' mA' : '';
+    });
+  }
+
+  triggerTable.querySelectorAll('td.val input').forEach(function(input){
+    input.addEventListener('input', updateTriggerMA);
+    input.addEventListener('change', updateTriggerMA);
+  });
+
+  lrvInput.addEventListener('input', function(){ setTimeout(updateTriggerMA, 0); });
+  lrvInput.addEventListener('change', function(){ setTimeout(updateTriggerMA, 0); });
+
+  const urvInput = leftPanel.querySelector('.urv-block input');
+  if(urvInput){
+    urvInput.addEventListener('input', function(){ setTimeout(updateTriggerMA, 0); });
+    urvInput.addEventListener('change', function(){ setTimeout(updateTriggerMA, 0); });
+  }
+
+  updateTriggerMA();
+})();
+</script>
+
+<div class='vc-modal-overlay' id='locAddModal' aria-hidden='true'>
+  <div class='vc-modal-card' role='dialog' aria-modal='true' aria-labelledby='locAddTitle'>
+    <div class='vc-modal-title' id='locAddTitle'>New location</div>
+    <div class='vc-modal-sub'>Skriv nytt location-navn</div>
+    <input class='vc-modal-field' id='locAddInput' type='text' autocomplete='off' inputmode='text' placeholder='Location'>
+    <div class='vc-modal-message' id='locAddMessage'></div>
+    <div class='vc-modal-actions'>
+      <button class='vc-modal-btn vc-modal-cancel' id='locAddCancel' type='button'>Cancel</button>
+      <button class='vc-modal-btn vc-modal-ok' id='locAddOk' type='button'>OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const addBtn = document.querySelector('.loc-add-btn');
+  const select = document.querySelector('.loc-select');
+  const modal = document.getElementById('locAddModal');
+  const input = document.getElementById('locAddInput');
+  const okBtn = document.getElementById('locAddOk');
+  const cancelBtn = document.getElementById('locAddCancel');
+  const message = document.getElementById('locAddMessage');
+  if(!addBtn || !select || !modal || !input || !okBtn || !cancelBtn) return;
+
+  function openModal(){
+    input.value = '';
+    if(message) message.textContent = '';
+    input.classList.remove('duplicate-stop');
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ input.focus(); }, 180);
+  }
+
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    addBtn.focus();
+  }
+
+  function clearValuesBelowLocation(){
+    const tagInput = document.querySelector('.tag-row .toptag');
+    const desInput = document.querySelector('.des-row input');
+    const unitBox = document.querySelector('.unit-labelbox');
+    const lrvInput = document.querySelector('.lrv-block input');
+    const urvInput = document.querySelector('.urv-block input');
+    const raInput = document.querySelector('.ra-block input');
+    const sliderText = document.querySelector('.vals');
+    const calLastRow = document.querySelector('.cal table tr:last-child');
+
+    if(tagInput) tagInput.value = '';
+    if(desInput) desInput.value = '';
+    if(unitBox) if(unitBox.value !== undefined){ unitBox.value = ''; } else { unitBox.textContent = ''; }
+    if(lrvInput) lrvInput.value = '';
+    if(urvInput) urvInput.value = '';
+    if(raInput) raInput.value = '';
+    if(sliderText) sliderText.textContent = '';
+
+    document.querySelectorAll('.tt td.val input').forEach(function(inp){ inp.value = ''; });
+    document.querySelectorAll('.tt td.ma').forEach(function(cell){ cell.textContent = ''; });
+
+    if(calLastRow){
+      const cells = calLastRow.querySelectorAll('td');
+      const unitText = unitBox && (unitBox.value !== undefined ? unitBox.value : unitBox.textContent).trim() ? (unitBox.value !== undefined ? unitBox.value : unitBox.textContent).trim() : 'Unit';
+      cells.forEach(function(cell, index){
+        cell.textContent = index === 0 ? unitText : '';
+      });
+    }
+  }
+
+  function addLocation(){
+    const name = input.value.trim();
+    if(!name){ closeModal(); return; }
+    let existing = null;
+    Array.from(select.options).forEach(function(opt){
+      if(opt.text.trim().toLowerCase() === name.toLowerCase()) existing = opt;
+    });
+    const database = window.vaagenDatabase;
+    if(!database || !Array.isArray(database.locations)){
+      if(message) message.textContent = 'Database is not available';
+      return;
+    }
+    const databaseLocation = database.locations.find(function(location){
+      return String(location.name || '').trim().toLowerCase() === name.toLowerCase();
+    });
+    if(databaseLocation){
+      if(message) message.textContent = 'Location finnes fra før i databasen';
+      input.classList.remove('duplicate-stop');
+      void input.offsetWidth;
+      input.classList.add('duplicate-stop');
+      input.focus();
+      return;
+    }
+    if(existing){
+      select.value = existing.value;
+    } else {
+      const opt = document.createElement('option');
+      opt.textContent = name;
+      opt.value = name;
+      select.appendChild(opt);
+      select.value = name;
+    }
+    database.locations.push({name:name,tags:[]});
+    clearValuesBelowLocation();
+    select.classList.remove('flash-new');
+    void select.offsetWidth;
+    select.classList.add('flash-new');
+    setTimeout(closeModal, 120);
+  }
+
+  addBtn.addEventListener('click', openModal);
+  cancelBtn.addEventListener('click', closeModal);
+  okBtn.addEventListener('click', addLocation);
+  input.addEventListener('input', function(){ if(message) message.textContent = ''; input.classList.remove('duplicate-stop'); });
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') addLocation();
+    if(e.key === 'Escape') closeModal();
+  });
+  modal.addEventListener('click', function(e){
+    if(e.target === modal) closeModal();
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const unitInput = document.querySelector('.unit-input');
+  if(!unitInput) return;
+  const slider = document.querySelector('.modern-slider');
+
+  function refreshAfterUnitChange(){
+    const calLastLabel = document.querySelector('.cal table tr:last-child td:first-child');
+    const unit = unitInput.value.trim() || 'Unit';
+    if(calLastLabel) calLastLabel.textContent = unit;
+    if(slider) slider.dispatchEvent(new Event('input', {bubbles:true}));
+  }
+
+  unitInput.addEventListener('input', refreshAfterUnitChange);
+  unitInput.addEventListener('change', refreshAfterUnitChange);
+  refreshAfterUnitChange();
+})();
+</script>
+
+<div class='vc-modal-overlay' id='locEditModal' aria-hidden='true'>
+  <div class='vc-modal-card' role='dialog' aria-modal='true' aria-labelledby='locEditTitle'>
+    <div class='vc-modal-title' id='locEditTitle'>Edit location</div>
+    <div class='vc-modal-sub'>Endrer tekst på valgt location</div>
+    <input class='vc-modal-field' id='locEditInput' type='text' autocomplete='off' inputmode='text' placeholder='Location'>
+    <div class='vc-modal-message' id='locEditMessage'></div>
+    <div class='vc-modal-actions'>
+      <button class='vc-modal-btn vc-modal-cancel' id='locEditCancel' type='button'>Cancel</button>
+      <button class='vc-modal-btn vc-modal-ok' id='locEditOk' type='button'>OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const editBtn = document.querySelector('.loc-edit-btn');
+  const select = document.querySelector('.loc-select');
+  const modal = document.getElementById('locEditModal');
+  const input = document.getElementById('locEditInput');
+  const okBtn = document.getElementById('locEditOk');
+  const cancelBtn = document.getElementById('locEditCancel');
+  const message = document.getElementById('locEditMessage');
+  if(!editBtn || !select || !modal || !input || !okBtn || !cancelBtn) return;
+
+  function currentOption(){
+    return select.options[select.selectedIndex] || null;
+  }
+
+  function openModal(){
+    const opt = currentOption();
+    input.value = opt ? opt.text.trim() : '';
+    if(message) message.textContent = '';
+    input.classList.remove('duplicate-stop');
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ input.focus(); input.select(); }, 180);
+  }
+
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    editBtn.focus();
+  }
+
+  function saveLocationText(){
+    const opt = currentOption();
+    if(!opt){ closeModal(); return; }
+    const oldName = opt.text.trim();
+    const newName = input.value.trim();
+    if(!newName){ closeModal(); return; }
+
+    let duplicate = null;
+    Array.from(select.options).forEach(function(other){
+      if(other !== opt && other.text.trim().toLowerCase() === newName.toLowerCase()) duplicate = other;
+    });
+    if(duplicate){
+      if(message) message.textContent = 'Location finnes fra før';
+      input.classList.remove('duplicate-stop');
+      void input.offsetWidth;
+      input.classList.add('duplicate-stop');
+      input.focus();
+      return;
+    }
+
+    opt.textContent = newName;
+    opt.value = newName;
+    select.value = newName;
+    select.classList.remove('flash-new');
+    void select.offsetWidth;
+    select.classList.add('flash-new');
+    setTimeout(closeModal, 120);
+  }
+
+  editBtn.addEventListener('click', openModal);
+  cancelBtn.addEventListener('click', closeModal);
+  okBtn.addEventListener('click', saveLocationText);
+  input.addEventListener('input', function(){ if(message) message.textContent = ''; input.classList.remove('duplicate-stop'); });
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') saveLocationText();
+    if(e.key === 'Escape') closeModal();
+  });
+  modal.addEventListener('click', function(e){
+    if(e.target === modal) closeModal();
+  });
+})();
+</script>
+
+<div class='vc-modal-overlay' id='tagAddModal' aria-hidden='true'>
+  <div class='vc-modal-card tag-modal-card' role='dialog' aria-modal='true' aria-labelledby='tagAddTitle'>
+    <div class='tag-modal-topbar'>
+      <div>
+        <div class='vc-modal-title' id='tagAddTitle'>New tag</div>
+      </div>
+      <div class='tag-top-actions'>
+        <button class='vc-modal-btn vc-modal-ok' id='tagAddOk' type='button'>Save</button>
+        <button class='vc-modal-btn vc-modal-cancel' id='tagAddCancel' type='button'>Cancel</button>
+      </div>
+    </div>
+
+    <div class='tag-form-row'>
+      <label for='tagAddTag'>Tag</label>
+      <input class='tag-form-input' id='tagAddTag' type='text' autocomplete='off' placeholder='Tag'>
+    </div>
+    <div class='tag-form-row'>
+      <label for='tagAddDes'>Description</label>
+      <input class='tag-form-input' id='tagAddDes' type='text' autocomplete='off' placeholder='Description'>
+    </div>
+
+    <div class='tag-form-grid'>
+      <div>
+        <div class='tag-form-row'>
+          <label for='tagAddUnit'>Unit</label>
+          <input class='tag-form-input' id='tagAddUnit' type='text' autocomplete='off' placeholder='Unit'>
+        </div>
+        <div class='tag-form-row'>
+          <label for='tagAddLRV'>LRV</label>
+          <input class='tag-form-input' id='tagAddLRV' type='text' inputmode='decimal' autocomplete='off' placeholder='LRV'>
+        </div>
+        <div class='tag-form-row'>
+          <label for='tagAddURV'>URV</label>
+          <input class='tag-form-input' id='tagAddURV' type='text' inputmode='decimal' autocomplete='off' placeholder='URV'>
+        </div>
+      </div>
+
+      <div>
+        <div class='tag-form-block-title'>Alarms</div>
+        <div class='tag-alarm-grid tag-alarm-grid-checks'>
+          <label for='tagAddH'>H</label><input class='tag-alarm-check' id='tagAddHCheck' type='checkbox'><input class='tag-form-input tag-alarm-value' id='tagAddH' type='text' inputmode='decimal' autocomplete='off' disabled>
+          <label for='tagAddHH'>HH</label><input class='tag-alarm-check' id='tagAddHHCheck' type='checkbox'><input class='tag-form-input tag-alarm-value' id='tagAddHH' type='text' inputmode='decimal' autocomplete='off' disabled>
+          <label for='tagAddL'>L</label><input class='tag-alarm-check' id='tagAddLCheck' type='checkbox'><input class='tag-form-input tag-alarm-value' id='tagAddL' type='text' inputmode='decimal' autocomplete='off' disabled>
+          <label for='tagAddLL'>LL</label><input class='tag-alarm-check' id='tagAddLLCheck' type='checkbox'><input class='tag-form-input tag-alarm-value' id='tagAddLL' type='text' inputmode='decimal' autocomplete='off' disabled>
+        </div>
+      </div>
+    </div>
+
+    <div class='tag-modal-message' id='tagAddMessage'></div>
+  </div>
+</div>
+<script>
+(function(){
+  const addBtn = document.querySelector('.tag-add-btn');
+  const modal = document.getElementById('tagAddModal');
+  const okBtn = document.getElementById('tagAddOk');
+  const cancelBtn = document.getElementById('tagAddCancel');
+  const message = document.getElementById('tagAddMessage');
+  const fields = {
+    tag: document.getElementById('tagAddTag'),
+    des: document.getElementById('tagAddDes'),
+    unit: document.getElementById('tagAddUnit'),
+    lrv: document.getElementById('tagAddLRV'),
+    urv: document.getElementById('tagAddURV'),
+    h: document.getElementById('tagAddH'),
+    hh: document.getElementById('tagAddHH'),
+    l: document.getElementById('tagAddL'),
+    ll: document.getElementById('tagAddLL')
+  };
+  if(!addBtn || !modal || !okBtn || !cancelBtn) return;
+
+  function openModal(){
+    Object.keys(fields).forEach(function(k){ if(fields[k]) fields[k].value = ''; });
+    if(message) message.textContent = '';
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ if(fields.tag) fields.tag.focus(); }, 30);
+  }
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+  }
+  function setValue(el, value){
+    if(!el) return;
+    el.value = value || '';
+    el.dispatchEvent(new Event('input', {bubbles:true}));
+    el.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+  function saveTag(){
+    const tag = (fields.tag && fields.tag.value ? fields.tag.value.trim() : '');
+    if(!tag){
+      if(message) message.textContent = 'Tag is required';
+      if(fields.tag) fields.tag.focus();
+      return;
+    }
+
+    const locationSelect = document.querySelector('.loc-select');
+    const database = window.vaagenDatabase;
+    const locationName = locationSelect ? String(locationSelect.value || '').trim() : '';
+    const location = database && Array.isArray(database.locations)
+      ? database.locations.find(function(item){ return String(item.name || '').trim() === locationName; })
+      : null;
+    if(!location){
+      if(message) message.textContent = 'Selected location was not found in database';
+      return;
+    }
+    if(!Array.isArray(location.tags)) location.tags = [];
+    const isEditMode = modal.classList.contains('tag-edit-mode') ||
+      (document.getElementById('tagAddTitle') && document.getElementById('tagAddTitle').textContent.trim() === 'Edit tag');
+    const currentMainTag = String((document.querySelector('.tag-row .toptag') || {}).value || '').trim();
+    const editedItem = isEditMode ? location.tags.find(function(item){
+      return String(item.tag || '').trim().toLowerCase() === currentMainTag.toLowerCase();
+    }) : null;
+    const duplicate = location.tags.some(function(item){
+      return item !== editedItem && String(item.tag || '').trim().toLowerCase() === tag.toLowerCase();
+    });
+    if(duplicate){
+      if(message) message.textContent = 'Tag already exists for selected location';
+      if(fields.tag) fields.tag.focus();
+      return;
+    }
+    const savedItem = editedItem || {};
+    savedItem.tag = tag;
+    savedItem.description = fields.des.value;
+    savedItem.unit = fields.unit.value;
+    savedItem.lrv = fields.lrv.value;
+    savedItem.urv = fields.urv.value;
+    savedItem.h = fields.h.value;
+    savedItem.hh = fields.hh.value;
+    savedItem.l = fields.l.value;
+    savedItem.ll = fields.ll.value;
+    if(!editedItem) location.tags.push(savedItem);
+    setValue(document.querySelector('.tag-row .toptag'), tag);
+    setValue(document.querySelector('.des-row input'), fields.des.value);
+    setValue(document.querySelector('.unit-input'), fields.unit.value);
+    setValue(document.querySelector('.lrv-block input'), fields.lrv.value);
+    setValue(document.querySelector('.urv-block input'), fields.urv.value);
+
+    const alarmInputs = document.querySelectorAll('.tt td.val input');
+    setValue(alarmInputs[0], fields.h.value);
+    setValue(alarmInputs[1], fields.hh.value);
+    setValue(alarmInputs[2], fields.l.value);
+    setValue(alarmInputs[3], fields.ll.value);
+
+    closeModal();
+  }
+
+  addBtn.addEventListener('click', openModal);
+  cancelBtn.addEventListener('click', closeModal);
+  okBtn.addEventListener('click', saveTag);
+  modal.addEventListener('pointerup', function(e){ if(e.target === modal) closeModal(); });
+  Object.keys(fields).forEach(function(k){
+    if(fields[k]) fields[k].addEventListener('keydown', function(e){
+      if(e.key === 'Enter') saveTag();
+      if(e.key === 'Escape') closeModal();
+    });
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const pairs = [
+    ['tagAddHCheck','tagAddH'],
+    ['tagAddHHCheck','tagAddHH'],
+    ['tagAddLCheck','tagAddL'],
+    ['tagAddLLCheck','tagAddLL']
+  ];
+  pairs.forEach(function(pair){
+    const check = document.getElementById(pair[0]);
+    const input = document.getElementById(pair[1]);
+    if(!check || !input) return;
+    function syncAlarmInput(){
+      input.disabled = !check.checked;
+      input.classList.toggle('alarm-enabled', check.checked);
+      if(!check.checked){ input.value = ''; }
+      if(check.checked){ input.focus(); }
+    }
+    check.addEventListener('change', syncAlarmInput);
+    syncAlarmInput();
+  });
+})();
+</script>
+
+<script>
+(function(){
+  function parseNo(value){
+    if(value === null || value === undefined) return NaN;
+    return parseFloat(String(value).replace(/\s/g,'').replace(',', '.'));
+  }
+  function formatNo(value){
+    if(!Number.isFinite(value)) return '';
+    return value.toFixed(2).replace('.', ',');
+  }
+  function recalcMainTriggerMA(){
+    const lrvInput = document.querySelector('.lrv-block input');
+    const raInput = document.querySelector('.ra-block input');
+    const triggerTable = document.querySelector('.tt');
+    if(!lrvInput || !raInput || !triggerTable) return;
+
+    const lrv = parseNo(lrvInput.value);
+    const ra = parseNo(raInput.value);
+
+    triggerTable.querySelectorAll('tr').forEach(function(row){
+      const valueInput = row.querySelector('td.val input');
+      const maCell = row.querySelector('td.ma');
+      if(!valueInput || !maCell) return;
+
+      const rawPv = String(valueInput.value || '').trim();
+      if(rawPv === ''){
+        maCell.textContent = '';
+        return;
+      }
+
+      const pv = parseNo(rawPv);
+      const ma = (Number.isFinite(pv) && Number.isFinite(lrv) && Number.isFinite(ra) && ra !== 0)
+        ? 4 + ((pv - lrv) / ra) * 16
+        : NaN;
+      maCell.textContent = Number.isFinite(ma) ? formatNo(ma) + ' mA' : '';
+    });
+  }
+
+  // Main table direct edits
+  document.addEventListener('input', function(e){
+    if(e.target && e.target.matches('.tt td.val input, .lrv-block input, .urv-block input')){
+      setTimeout(recalcMainTriggerMA, 0);
+      setTimeout(recalcMainTriggerMA, 20);
+    }
+  });
+  document.addEventListener('change', function(e){
+    if(e.target && e.target.matches('.tt td.val input, .lrv-block input, .urv-block input')){
+      setTimeout(recalcMainTriggerMA, 0);
+      setTimeout(recalcMainTriggerMA, 20);
+    }
+  });
+
+  // Tag+ writes several values programmatically. Run one final pass after Save closes the form.
+  const tagSaveBtn = document.getElementById('tagAddOk');
+  if(tagSaveBtn){
+    tagSaveBtn.addEventListener('click', function(){
+      setTimeout(recalcMainTriggerMA, 0);
+      setTimeout(recalcMainTriggerMA, 30);
+      setTimeout(recalcMainTriggerMA, 100);
+    });
+  }
+})();
+</script>
+
+<script>
+(function(){
+  const editBtn = document.querySelector('.tag-edit-btn');
+  const addBtn = document.querySelector('.tag-add-btn');
+  const modal = document.getElementById('tagAddModal');
+  if(!editBtn || !addBtn || !modal) return;
+
+  function setField(id, value){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.value = value || '';
+    el.dispatchEvent(new Event('input', {bubbles:true}));
+    el.dispatchEvent(new Event('change', {bubbles:true}));
+  }
+
+  function setAlarm(checkId, inputId, value){
+    const check = document.getElementById(checkId);
+    const input = document.getElementById(inputId);
+    if(!check || !input) return;
+    const hasValue = String(value || '').trim() !== '';
+    check.checked = hasValue;
+    check.dispatchEvent(new Event('change', {bubbles:true}));
+    if(hasValue){
+      input.value = value;
+      input.disabled = false;
+      input.classList.add('alarm-enabled');
+      input.dispatchEvent(new Event('input', {bubbles:true}));
+      input.dispatchEvent(new Event('change', {bubbles:true}));
+    }
+  }
+
+  function readMainForm(){
+    const alarmInputs = document.querySelectorAll('.tt td.val input');
+    return {
+      tag: (document.querySelector('.tag-row .toptag') || {}).value || '',
+      des: (document.querySelector('.des-row input') || {}).value || '',
+      unit: (document.querySelector('.unit-input') || {}).value || '',
+      lrv: (document.querySelector('.lrv-block input') || {}).value || '',
+      urv: (document.querySelector('.urv-block input') || {}).value || '',
+      h: alarmInputs[0] ? alarmInputs[0].value : '',
+      hh: alarmInputs[1] ? alarmInputs[1].value : '',
+      l: alarmInputs[2] ? alarmInputs[2].value : '',
+      ll: alarmInputs[3] ? alarmInputs[3].value : ''
+    };
+  }
+
+  function fillEditForm(data){
+    const title = document.getElementById('tagAddTitle');
+    if(title) title.textContent = 'Edit tag';
+
+    setField('tagAddTag', data.tag);
+    setField('tagAddDes', data.des);
+    setField('tagAddUnit', data.unit);
+    setField('tagAddLRV', data.lrv);
+    setField('tagAddURV', data.urv);
+
+    setAlarm('tagAddHCheck', 'tagAddH', data.h);
+    setAlarm('tagAddHHCheck', 'tagAddHH', data.hh);
+    setAlarm('tagAddLCheck', 'tagAddL', data.l);
+    setAlarm('tagAddLLCheck', 'tagAddLL', data.ll);
+  }
+
+  editBtn.addEventListener('click', function(){
+    const data = readMainForm();
+    addBtn.click();
+    setTimeout(function(){ fillEditForm(data); }, 20);
+    setTimeout(function(){ fillEditForm(data); }, 80);
+  });
+
+  // Keep New tag title when using + button.
+  addBtn.addEventListener('click', function(){
+    setTimeout(function(){
+      const title = document.getElementById('tagAddTitle');
+      if(title && !modal.classList.contains('edit-mode')) title.textContent = 'New tag';
+    }, 0);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  const modal = document.getElementById('tagAddModal');
+  const cancelBtn = document.getElementById('tagAddCancel');
+  const addBtn = document.querySelector('.tag-add-btn');
+  const editBtn = document.querySelector('.tag-edit-btn');
+  const title = document.getElementById('tagAddTitle');
+  if(!modal) return;
+
+  function resetTagFormState(){
+    modal.classList.remove('tag-edit-mode');
+    if(title) title.textContent = 'New tag';
+  }
+
+  // New Tag mode: blank form/new title.
+  if(addBtn){
+    addBtn.addEventListener('click', function(){
+      setTimeout(function(){
+        modal.classList.remove('tag-edit-mode');
+        if(title) title.textContent = 'New tag';
+      }, 5);
+    });
+  }
+
+  // Edit mode: title stays as Edit tag after prefill script has loaded values.
+  if(editBtn){
+    editBtn.addEventListener('click', function(){
+      setTimeout(function(){
+        modal.classList.add('tag-edit-mode');
+        if(title) title.textContent = 'Edit tag';
+      }, 100);
+    });
+  }
+
+  // Cancel is explicitly local only: close/reset form title/state, do not write values anywhere.
+  if(cancelBtn){
+    cancelBtn.addEventListener('click', function(){
+      setTimeout(resetTagFormState, 20);
+    });
+  }
+
+  // Overlay close also resets state only.
+  modal.addEventListener('pointerup', function(e){
+    if(e.target === modal){
+      setTimeout(resetTagFormState, 20);
+    }
+  });
+})();
+</script>
+
+<style>
+/* V105: hide main Tag plus button; Add Tag is started from Tag Actions */
+.tag-row .tag-add-btn{display:none!important}
+/* V104: Tag Actions dialog */
+#tagActionsModal{align-items:center!important;padding:14px!important;box-sizing:border-box}
+.tag-actions-card{width:min(340px,calc(100vw - 28px));padding:14px;border-radius:18px}
+.tag-actions-title{font-size:17px;font-weight:700;color:#26343d;margin-bottom:10px}
+.tag-actions-list{display:grid;gap:8px}
+.tag-action-btn{width:100%;min-height:36px;border:0;border-radius:10px;background:#86a1b4;color:#fff;font-size:14px;padding:8px 12px}
+.tag-action-close{background:#edf2f5;color:#33424c}
+</style>
+<div class='vc-modal-overlay' id='tagActionsModal' aria-hidden='true'>
+  <div class='vc-modal-card tag-actions-card' role='dialog' aria-modal='true' aria-labelledby='tagActionsTitle'>
+    <div class='tag-actions-title' id='tagActionsTitle'>Tag Actions</div>
+    <div class='tag-actions-list'>
+      <button class='tag-action-btn' id='tagActionAdd' type='button'>Add Tag</button>
+      <button class='tag-action-btn' id='tagActionEdit' type='button'>Edit Tag</button>
+      <button class='tag-action-btn' id='tagActionSearch' type='button'>Search Tag</button>
+      <button class='tag-action-btn' id='tagActionDelete' type='button'>Delete Tag</button>
+      <button class='tag-action-btn' id='tagActionPrint' type='button'>Print Tag</button>
+      <button class='tag-action-btn' id='tagActionPrintAll' type='button'>Print All Tags</button>
+      <button class='tag-action-btn tag-action-close' id='tagActionsClose' type='button'>Close</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V104: three-dot button opens and closes Tag Actions */
+(function(){
+  const moreBtn=document.querySelector('.tag-del-btn');
+  const modal=document.getElementById('tagActionsModal');
+  const closeBtn=document.getElementById('tagActionsClose');
+  if(!moreBtn || !modal || !closeBtn) return;
+  function openActions(){
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ closeBtn.focus(); },30);
+  }
+  function closeActions(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    moreBtn.focus();
+  }
+  moreBtn.setAttribute('aria-label','Open Tag Actions');
+  const addActionBtn=document.getElementById('tagActionAdd');
+  const hiddenAddBtn=document.querySelector('.tag-add-btn');
+  moreBtn.addEventListener('click',openActions);
+  closeBtn.addEventListener('click',closeActions);
+  if(addActionBtn && hiddenAddBtn){
+    addActionBtn.addEventListener('click',function(){
+      closeActions();
+      setTimeout(function(){ hiddenAddBtn.click(); },0);
+    });
+  }
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeActions(); });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && modal.classList.contains('is-open')) closeActions();
+  });
+})();
+</script>
+<script>
+/* V175: empty database on first start */
+window.vaagenDatabase={locations:[]};
+</script>
+<script>
+/* V107: previous and next tag navigation for the selected location */
+(function(){
+  const oldPreviousBtn=document.querySelector('.loc-edit-btn');
+  const nextBtn=document.querySelector('.tag-search-btn');
+  const locationSelect=document.querySelector('.loc-select');
+  if(!oldPreviousBtn || !nextBtn || !locationSelect) return;
+  const previousBtn=oldPreviousBtn.cloneNode(true);
+  oldPreviousBtn.parentNode.replaceChild(previousBtn,oldPreviousBtn);
+  const timers=new Map();
+  function setValue(element,value){
+    if(!element) return;
+    element.value=value === undefined || value === null ? '' : String(value);
+    element.dispatchEvent(new Event('input',{bubbles:true}));
+    element.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function selectedLocation(){
+    const database=window.vaagenDatabase;
+    if(!database || !Array.isArray(database.locations)) return null;
+    const selectedName=String(locationSelect.value || '').trim();
+    return database.locations.find(function(location){
+      return String(location.name || '').trim() === selectedName;
+    }) || null;
+  }
+  function showTagAtOffset(offset){
+    const location=selectedLocation();
+    if(!location || !Array.isArray(location.tags) || !location.tags.length) return false;
+    const tagInput=document.querySelector('.tag-row .toptag');
+    const currentTag=tagInput ? String(tagInput.value || '').trim() : '';
+    const sortedTags=location.tags.slice().sort(function(a,b){
+      const aTag=String(a.tag || '').trim();
+      const bTag=String(b.tag || '').trim();
+      const aStartsNumber=/^\d/.test(aTag);
+      const bStartsNumber=/^\d/.test(bTag);
+      if(aStartsNumber !== bStartsNumber) return aStartsNumber ? -1 : 1;
+      return aTag.localeCompare(bTag,undefined,{numeric:true,sensitivity:'base'});
+    });
+    const currentIndex=sortedTags.findIndex(function(item){
+      return String(item.tag || '').trim() === currentTag;
+    });
+    let targetIndex=currentIndex < 0 ? (offset > 0 ? 0 : sortedTags.length-1) : currentIndex+offset;
+    if(targetIndex < 0 || targetIndex >= sortedTags.length) return false;
+    const item=sortedTags[targetIndex];
+    const alarmInputs=document.querySelectorAll('.tt td.val input');
+    setValue(tagInput,item.tag);
+    setValue(document.querySelector('.des-row input'),item.description);
+    setValue(document.querySelector('.unit-input'),item.unit);
+    setValue(document.querySelector('.lrv-block input'),item.lrv);
+    setValue(document.querySelector('.urv-block input'),item.urv);
+    setValue(alarmInputs[0],item.h);
+    setValue(alarmInputs[1],item.hh);
+    setValue(alarmInputs[2],item.l);
+    setValue(alarmInputs[3],item.ll);
+    return true;
+  }
+  function stop(button){
+    const state=timers.get(button);
+    if(!state) return;
+    clearTimeout(state.delay); clearInterval(state.repeat); timers.delete(button);
+  }
+  function bind(button,offset,label){
+    button.setAttribute('aria-label',label); button.style.touchAction='none';
+    button.addEventListener('pointerdown',function(event){
+      event.preventDefault(); stop(button); showTagAtOffset(offset);
+      const state={delay:null,repeat:null};
+      state.delay=setTimeout(function(){
+        state.repeat=setInterval(function(){ if(!showTagAtOffset(offset)) stop(button); },1000);
+      },500);
+      timers.set(button,state);
+    });
+    button.addEventListener('pointerup',function(){ stop(button); });
+    button.addEventListener('pointercancel',function(){ stop(button); });
+    button.addEventListener('pointerleave',function(){ stop(button); });
+  }
+  bind(previousBtn,-1,'Previous tag');
+  bind(nextBtn,1,'Next tag');
+  window.addEventListener('blur',function(){ stop(previousBtn); stop(nextBtn); });
+})();
+</script>
+<style>
+/* V110: prompt when selected location has no tags */
+.location-empty-card{width:min(330px,calc(100vw - 28px))}
+.location-empty-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+</style>
+<div class='vc-modal-overlay' id='locationEmptyModal' aria-hidden='true'>
+  <div class='vc-modal-card location-empty-card' role='dialog' aria-modal='true' aria-labelledby='locationEmptyTitle'>
+    <div class='vc-modal-title' id='locationEmptyTitle'>Location has no tags</div>
+    <div class='vc-modal-sub'>Add the first tag for the selected location?</div>
+    <div class='location-empty-actions'>
+      <button class='vc-modal-btn vc-modal-ok' id='locationEmptyAdd' type='button'>Add Tag</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='locationEmptyCancel' type='button'>Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V110: load first tag when location changes, or offer Add Tag */
+(function(){
+  const locationSelect=document.querySelector('.loc-select');
+  const modal=document.getElementById('locationEmptyModal');
+  const addBtn=document.getElementById('locationEmptyAdd');
+  const cancelBtn=document.getElementById('locationEmptyCancel');
+  const hiddenTagAddBtn=document.querySelector('.tag-add-btn');
+  if(!locationSelect || !modal || !addBtn || !cancelBtn) return;
+
+  function setValue(element,value){
+    if(!element) return;
+    element.value=value === undefined || value === null ? '' : String(value);
+    element.dispatchEvent(new Event('input',{bubbles:true}));
+    element.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function clearTagSheet(){
+    const alarmInputs=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),'');
+    setValue(document.querySelector('.des-row input'),'');
+    setValue(document.querySelector('.unit-input'),'');
+    setValue(document.querySelector('.lrv-block input'),'');
+    setValue(document.querySelector('.urv-block input'),'');
+    alarmInputs.forEach(function(input){ setValue(input,''); });
+  }
+  function showTag(item){
+    const alarmInputs=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),item.tag);
+    setValue(document.querySelector('.des-row input'),item.description);
+    setValue(document.querySelector('.unit-input'),item.unit);
+    setValue(document.querySelector('.lrv-block input'),item.lrv);
+    setValue(document.querySelector('.urv-block input'),item.urv);
+    setValue(alarmInputs[0],item.h);
+    setValue(alarmInputs[1],item.hh);
+    setValue(alarmInputs[2],item.l);
+    setValue(alarmInputs[3],item.ll);
+  }
+  function openPrompt(){
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ addBtn.focus(); },30);
+  }
+  function closePrompt(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+  }
+  function selectedDatabaseLocation(){
+    const database=window.vaagenDatabase;
+    if(!database || !Array.isArray(database.locations)) return null;
+    const name=String(locationSelect.value || '').trim().toLowerCase();
+    return database.locations.find(function(location){
+      return String(location.name || '').trim().toLowerCase()===name;
+    }) || null;
+  }
+  locationSelect.addEventListener('change',function(){
+    closePrompt();
+    const location=selectedDatabaseLocation();
+    if(location && Array.isArray(location.tags) && location.tags.length){
+      showTag(location.tags[0]);
+      return;
+    }
+    clearTagSheet();
+    openPrompt();
+  });
+  addBtn.addEventListener('click',function(){
+    closePrompt();
+    if(hiddenTagAddBtn) setTimeout(function(){ hiddenTagAddBtn.click(); },0);
+  });
+  cancelBtn.addEventListener('click',function(){
+    clearTagSheet();
+    closePrompt();
+    locationSelect.focus();
+  });
+  modal.addEventListener('click',function(event){
+    if(event.target===modal){ clearTagSheet(); closePrompt(); }
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape' && modal.classList.contains('is-open')){
+      clearTagSheet(); closePrompt();
+    }
+  });
+})();
+</script>
+<script>
+/* V112: remove Loc/Tag labels and rearrange existing top controls without resizing */
+(function(){
+  const locRow=document.querySelector('.loc-row');
+  const tagRow=document.querySelector('.tag-row');
+  const locLabel=locRow ? locRow.querySelector('.label') : null;
+  const tagLabel=tagRow ? tagRow.querySelector('.label') : null;
+  const locationAddBtn=document.querySelector('.loc-add-btn');
+  const previousBtn=document.querySelector('.loc-edit-btn');
+  const tagInput=document.querySelector('.tag-row .toptag');
+  const nextBtn=document.querySelector('.tag-search-btn');
+  const moreBtn=document.querySelector('.tag-del-btn');
+  if(!locRow || !tagRow || !locationAddBtn || !previousBtn || !tagInput || !nextBtn || !moreBtn) return;
+
+  if(locLabel) locLabel.remove();
+  if(tagLabel) tagLabel.remove();
+
+  locationAddBtn.insertAdjacentElement('afterend',moreBtn);
+  tagRow.insertBefore(previousBtn,tagInput);
+  tagInput.insertAdjacentElement('afterend',nextBtn);
+})();
+</script>
+<style>
+/* V113: white Tag Actions button */
+.tag-row .tag-del-btn,
+.loc-row .tag-del-btn{
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+}
+</style>
+<script>
+/* V113: remove old main Edit button and open Edit Tag from Tag Actions */
+(function(){
+  const oldEditBtn=document.querySelector('.tag-edit-btn');
+  const editActionBtn=document.getElementById('tagActionEdit');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const hiddenAddBtn=document.querySelector('.tag-add-btn');
+  if(oldEditBtn) oldEditBtn.remove();
+  if(!editActionBtn || !hiddenAddBtn) return;
+
+  function setField(id,value){
+    const element=document.getElementById(id);
+    if(!element) return;
+    element.value=value || '';
+    element.dispatchEvent(new Event('input',{bubbles:true}));
+    element.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function setAlarm(checkId,inputId,value){
+    const check=document.getElementById(checkId);
+    const input=document.getElementById(inputId);
+    if(!check || !input) return;
+    const hasValue=String(value || '').trim()!=='';
+    check.checked=hasValue;
+    check.dispatchEvent(new Event('change',{bubbles:true}));
+    if(hasValue){
+      input.disabled=false;
+      input.classList.add('alarm-enabled');
+      input.value=value;
+    }
+  }
+  editActionBtn.addEventListener('click',function(){
+    const alarmInputs=document.querySelectorAll('.tt td.val input');
+    const data={
+      tag:(document.querySelector('.tag-row .toptag') || {}).value || '',
+      des:(document.querySelector('.des-row input') || {}).value || '',
+      unit:(document.querySelector('.unit-input') || {}).value || '',
+      lrv:(document.querySelector('.lrv-block input') || {}).value || '',
+      urv:(document.querySelector('.urv-block input') || {}).value || '',
+      h:alarmInputs[0] ? alarmInputs[0].value : '',
+      hh:alarmInputs[1] ? alarmInputs[1].value : '',
+      l:alarmInputs[2] ? alarmInputs[2].value : '',
+      ll:alarmInputs[3] ? alarmInputs[3].value : ''
+    };
+    if(actionsModal){
+      actionsModal.classList.remove('is-open');
+      actionsModal.setAttribute('aria-hidden','true');
+    }
+    hiddenAddBtn.click();
+    setTimeout(function(){
+      const title=document.getElementById('tagAddTitle');
+      if(title) title.textContent='Edit tag';
+      setField('tagAddTag',data.tag);
+      setField('tagAddDes',data.des);
+      setField('tagAddUnit',data.unit);
+      setField('tagAddLRV',data.lrv);
+      setField('tagAddURV',data.urv);
+      setAlarm('tagAddHCheck','tagAddH',data.h);
+      setAlarm('tagAddHHCheck','tagAddHH',data.hh);
+      setAlarm('tagAddLCheck','tagAddL',data.l);
+      setAlarm('tagAddLLCheck','tagAddLL',data.ll);
+    },30);
+  });
+})();
+</script>
+<style>
+/* V114: Tag box 30 percent shorter and centered */
+.tag-row .toptag{
+  flex:0 0 70%!important;
+  width:70%!important;
+  max-width:70%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+</style>
+<style>
+/* V115: Tag box is 40 percent of its V114 width and remains centered */
+.tag-row .toptag{
+  flex:0 0 28%!important;
+  width:28%!important;
+  max-width:28%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+</style>
+<style>
+/* V116: Tag box 20 percent larger than V115; next arrow side-shifted left */
+.tag-row .toptag{
+  flex:0 0 33.6%!important;
+  width:33.6%!important;
+  max-width:33.6%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.tag-row .tag-search-btn{
+  position:relative!important;
+  left:-28px!important;
+}
+</style>
+<style>
+/* V117: Tag box 20 percent larger than V116 */
+.tag-row .toptag{
+  flex:0 0 40.32%!important;
+  width:40.32%!important;
+  max-width:40.32%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+</style>
+<style>
+/* V118: Tag box 10 percent larger than V117 */
+.tag-row .toptag{
+  flex:0 0 44.352%!important;
+  width:44.352%!important;
+  max-width:44.352%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+</style>
+<style>
+/* V119: equal visual spacing between Tag box and both arrows */
+.tag-row .loc-edit-btn{
+  position:relative!important;
+  left:28px!important;
+}
+</style>
+<style>
+/* V120: move previous arrow further right */
+.tag-row .loc-edit-btn{
+  position:relative!important;
+  left:56px!important;
+}
+</style>
+<style>
+/* V121: align Location box left edge with previous Tag arrow */
+.loc-row .loc-select{
+  margin-left:56px!important;
+}
+</style>
+<style>
+/* V122: Help button directly below Tag Actions without changing row layout */
+.tag-row{position:relative!important}
+.tag-help-btn{
+  position:absolute!important;
+  right:0!important;
+  top:0!important;
+  width:42px!important;
+  height:40px!important;
+  padding:0!important;
+  background:#fff!important;
+  color:#444!important;
+  border:1px solid #7D97AB!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:18px!important;
+  font-weight:600!important;
+  line-height:1!important;
+}
+</style>
+<script>
+/* V122: add inactive Help button at the far right of the Tag row */
+(function(){
+  const tagRow=document.querySelector('.tag-row');
+  if(!tagRow || document.querySelector('.tag-help-btn')) return;
+  const helpBtn=document.createElement('button');
+  helpBtn.className='btn tag-help-btn';
+  helpBtn.type='button';
+  helpBtn.textContent='?';
+  helpBtn.setAttribute('aria-label','Help');
+  tagRow.appendChild(helpBtn);
+})();
+</script>
+<style>
+/* V123: FV logo in the reserved upper-left field */
+.app{position:relative!important}
+.fv-logo{
+  position:absolute!important;
+  left:12px!important;
+  top:10px!important;
+  width:42px!important;
+  height:42px!important;
+  object-fit:contain!important;
+  display:block!important;
+  pointer-events:none!important;
+}
+</style>
+<script>
+/* V123: embedded FV logo, no external file dependency */
+(function(){
+  const app=document.querySelector('.app');
+  if(!app || document.querySelector('.fv-logo')) return;
+  const logo=document.createElement('img');
+  logo.className='fv-logo';
+  logo.alt='FV';
+  logo.src='data:image/png;base64,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';
+  app.appendChild(logo);
+})();
+</script>
+<style>
+/* V124: FV logo slightly lower and centered in the left reserved field */
+.fv-logo{
+  left:31px!important;
+  top:24px!important;
+}
+</style>
+<style>
+/* V125: move FV logo 10px left only */
+.fv-logo{
+  left:21px!important;
+}
+</style>
+<style>
+/* V126: move FV logo 5px left and 5px down only */
+.fv-logo{
+  left:16px!important;
+  top:29px!important;
+}
+</style>
+<style>
+/* V127: Tag field styled as a steel plate with four rivets */
+.tag-row .toptag{
+  text-align:center!important;
+  font-weight:600!important;
+  color:#26343d!important;
+  border:1px solid #8f9aa1!important;
+  border-radius:4px!important;
+  padding-left:18px!important;
+  padding-right:18px!important;
+  background:
+    radial-gradient(circle at 7px 7px,#4f5960 0 1.5px,#cbd1d5 1.8px 3.2px,transparent 3.5px),
+    radial-gradient(circle at calc(100% - 7px) 7px,#4f5960 0 1.5px,#cbd1d5 1.8px 3.2px,transparent 3.5px),
+    radial-gradient(circle at 7px calc(100% - 7px),#4f5960 0 1.5px,#cbd1d5 1.8px 3.2px,transparent 3.5px),
+    radial-gradient(circle at calc(100% - 7px) calc(100% - 7px),#4f5960 0 1.5px,#cbd1d5 1.8px 3.2px,transparent 3.5px),
+    linear-gradient(180deg,#f4f6f7 0%,#d9dee1 48%,#eef1f2 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(95,105,112,.22)!important;
+}
+</style>
+<style>
+/* V128: main data fields are display-only */
+.tag-row .toptag,
+.des-row input,
+.unit-input,
+.lrv-block input,
+.urv-block input,
+.tt td.val input{
+  cursor:default!important;
+}
+</style>
+<script>
+/* V128: prevent manual editing on main page while preserving programmatic updates */
+(function(){
+  const fields=[
+    document.querySelector('.tag-row .toptag'),
+    document.querySelector('.des-row input'),
+    document.querySelector('.unit-input'),
+    document.querySelector('.lrv-block input'),
+    document.querySelector('.urv-block input')
+  ];
+  document.querySelectorAll('.tt td.val input').forEach(function(input){ fields.push(input); });
+  fields.forEach(function(field){
+    if(!field) return;
+    field.readOnly=true;
+    field.setAttribute('aria-readonly','true');
+  });
+})();
+</script>
+<style>
+/* V129: display-only main fields cannot receive pointer selection */
+.tag-row .toptag,
+.des-row input,
+.unit-input,
+.lrv-block input,
+.urv-block input,
+.tt td.val input{
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+  caret-color:transparent!important;
+  outline:none!important;
+}
+</style>
+<script>
+/* V129: remove main data fields from keyboard focus order */
+(function(){
+  const selector='.tag-row .toptag,.des-row input,.unit-input,.lrv-block input,.urv-block input,.tt td.val input';
+  document.querySelectorAll(selector).forEach(function(field){
+    field.tabIndex=-1;
+  });
+})();
+</script>
+<style>
+/* V130: RA is display-only and cannot be selected */
+.ra-block input{
+  pointer-events:none!important;
+  user-select:none!important;
+  -webkit-user-select:none!important;
+  caret-color:transparent!important;
+  cursor:default!important;
+  outline:none!important;
+}
+</style>
+<script>
+/* V130: remove RA from keyboard focus order */
+(function(){
+  const ra=document.querySelector('.ra-block input');
+  if(!ra) return;
+  ra.readOnly=true;
+  ra.tabIndex=-1;
+  ra.setAttribute('aria-readonly','true');
+})();
+</script>
+<style>
+/* V131: prevent blue text selection across the main app */
+.app,
+.app *{
+  user-select:none!important;
+  -webkit-user-select:none!important;
+  -ms-user-select:none!important;
+}
+</style>
+<script>
+/* V132: limit form text to the visible width of corresponding main fields */
+(function(){
+  function textWidth(text, reference){
+    const canvas=textWidth.canvas || (textWidth.canvas=document.createElement('canvas'));
+    const context=canvas.getContext('2d');
+    const style=getComputedStyle(reference);
+    context.font=style.font || [style.fontWeight,style.fontSize,style.fontFamily].join(' ');
+    return context.measureText(text).width;
+  }
+  function availableWidth(reference){
+    const style=getComputedStyle(reference);
+    return reference.clientWidth
+      - (parseFloat(style.paddingLeft)||0)
+      - (parseFloat(style.paddingRight)||0)
+      - 4;
+  }
+  function bindLimitedInput(input,reference){
+    if(!input || !reference) return;
+    let lastValid=input.value || '';
+    function fits(value){ return textWidth(value,reference)<=availableWidth(reference); }
+    if(!fits(lastValid)) lastValid='';
+    input.addEventListener('beforeinput',function(event){
+      if(event.inputType && event.inputType.indexOf('delete')===0) return;
+      const start=input.selectionStart===null ? input.value.length : input.selectionStart;
+      const end=input.selectionEnd===null ? start : input.selectionEnd;
+      const inserted=event.data===null ? '' : event.data;
+      const candidate=input.value.slice(0,start)+inserted+input.value.slice(end);
+      if(!fits(candidate)) event.preventDefault();
+    });
+    input.addEventListener('input',function(){
+      if(fits(input.value)) lastValid=input.value;
+      else input.value=lastValid;
+    });
+    input.addEventListener('paste',function(event){
+      const pasted=(event.clipboardData || window.clipboardData).getData('text');
+      const start=input.selectionStart===null ? input.value.length : input.selectionStart;
+      const end=input.selectionEnd===null ? start : input.selectionEnd;
+      const candidate=input.value.slice(0,start)+pasted+input.value.slice(end);
+      if(!fits(candidate)) event.preventDefault();
+    });
+  }
+  bindLimitedInput(document.getElementById('locAddInput'),document.querySelector('.loc-select'));
+  bindLimitedInput(document.getElementById('locEditInput'),document.querySelector('.loc-select'));
+  bindLimitedInput(document.getElementById('tagAddTag'),document.querySelector('.tag-row .toptag'));
+  bindLimitedInput(document.getElementById('tagAddDes'),document.querySelector('.des-row input'));
+  bindLimitedInput(document.getElementById('tagAddUnit'),document.querySelector('.unit-input'));
+})();
+</script>
+<style>
+/* V133: Delete Location dialogs */
+.delete-location-card{width:min(350px,calc(100vw - 28px))}
+.delete-location-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.delete-location-danger{background:#A56C6C!important;color:#fff!important}
+</style>
+<div class='vc-modal-overlay' id='deleteLocationModal' aria-hidden='true'>
+  <div class='vc-modal-card delete-location-card' role='dialog' aria-modal='true' aria-labelledby='deleteLocationTitle'>
+    <div class='vc-modal-title' id='deleteLocationTitle'>Delete Location</div>
+    <div class='vc-modal-sub' id='deleteLocationMessage'></div>
+    <div class='delete-location-actions' id='deleteLocationConfirmActions'>
+      <button class='vc-modal-btn delete-location-danger' id='deleteLocationConfirm' type='button'>Delete</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='deleteLocationCancel' type='button'>Cancel</button>
+    </div>
+    <div class='delete-location-actions' id='deleteLocationBlockedActions'>
+      <button class='vc-modal-btn vc-modal-cancel' id='deleteLocationBlockedOk' type='button'>OK</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V133: delete active Location only when it has no Tags */
+(function(){
+  const actionsList=document.querySelector('#tagActionsModal .tag-actions-list');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const actionsClose=document.getElementById('tagActionsClose');
+  const locationSelect=document.querySelector('.loc-select');
+  const modal=document.getElementById('deleteLocationModal');
+  const message=document.getElementById('deleteLocationMessage');
+  const confirmActions=document.getElementById('deleteLocationConfirmActions');
+  const blockedActions=document.getElementById('deleteLocationBlockedActions');
+  const confirmBtn=document.getElementById('deleteLocationConfirm');
+  const cancelBtn=document.getElementById('deleteLocationCancel');
+  const blockedOk=document.getElementById('deleteLocationBlockedOk');
+  if(!actionsList || !actionsModal || !actionsClose || !locationSelect || !modal) return;
+
+  const deleteAction=document.createElement('button');
+  deleteAction.className='tag-action-btn';
+  deleteAction.id='tagActionDeleteLocation';
+  deleteAction.type='button';
+  deleteAction.textContent='Delete Location';
+  actionsList.insertBefore(deleteAction,actionsClose);
+
+  function database(){ return window.vaagenDatabase; }
+  function activeName(){ return String(locationSelect.value || '').trim(); }
+  function activeLocation(){
+    const db=database();
+    if(!db || !Array.isArray(db.locations)) return null;
+    const name=activeName().toLowerCase();
+    return db.locations.find(function(location){
+      return String(location.name || '').trim().toLowerCase()===name;
+    }) || null;
+  }
+  function closeActions(){
+    actionsModal.classList.remove('is-open');
+    actionsModal.setAttribute('aria-hidden','true');
+  }
+  function openModal(blocked,name){
+    closeActions();
+    if(blocked){
+      message.textContent='For å slette Location «'+name+'» må først alle Tags slettes.';
+      confirmActions.style.display='none';
+      blockedActions.style.display='flex';
+    }else{
+      message.textContent='Slette Location «'+name+'»?';
+      confirmActions.style.display='flex';
+      blockedActions.style.display='none';
+    }
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    setTimeout(function(){ (blocked ? blockedOk : confirmBtn).focus(); },30);
+  }
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+  }
+  function setValue(element,value){
+    if(!element) return;
+    element.value=value === undefined || value === null ? '' : String(value);
+    element.dispatchEvent(new Event('input',{bubbles:true}));
+    element.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function clearSheet(){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),'');
+    setValue(document.querySelector('.des-row input'),'');
+    setValue(document.querySelector('.unit-input'),'');
+    setValue(document.querySelector('.lrv-block input'),'');
+    setValue(document.querySelector('.urv-block input'),'');
+    setValue(document.querySelector('.ra-block input'),'');
+    alarms.forEach(function(input){ setValue(input,''); });
+    document.querySelectorAll('.tt td.ma').forEach(function(cell){ cell.textContent=''; });
+    const lastRow=document.querySelector('.cal table tr:last-child');
+    if(lastRow) lastRow.querySelectorAll('td').forEach(function(cell,index){ cell.textContent=index===0 ? 'Unit' : ''; });
+    const values=document.querySelector('.vals');
+    if(values) values.textContent='';
+  }
+  function showTag(item){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),item.tag);
+    setValue(document.querySelector('.des-row input'),item.description);
+    setValue(document.querySelector('.unit-input'),item.unit);
+    setValue(document.querySelector('.lrv-block input'),item.lrv);
+    setValue(document.querySelector('.urv-block input'),item.urv);
+    setValue(alarms[0],item.h);
+    setValue(alarms[1],item.hh);
+    setValue(alarms[2],item.l);
+    setValue(alarms[3],item.ll);
+  }
+  function showSelectedLocation(){
+    const location=activeLocation();
+    if(location && Array.isArray(location.tags) && location.tags.length){
+      showTag(location.tags[0]);
+    }else{
+      clearSheet();
+    }
+  }
+
+  deleteAction.addEventListener('click',function(){
+    const name=activeName();
+    const location=activeLocation();
+    if(!name || !location) return;
+    openModal(Array.isArray(location.tags) && location.tags.length>0,name);
+  });
+  confirmBtn.addEventListener('click',function(){
+    const db=database();
+    const location=activeLocation();
+    if(!db || !Array.isArray(db.locations) || !location) return;
+    if(Array.isArray(location.tags) && location.tags.length){
+      openModal(true,activeName());
+      return;
+    }
+    const oldIndex=locationSelect.selectedIndex;
+    const dbIndex=db.locations.indexOf(location);
+    if(dbIndex>=0) db.locations.splice(dbIndex,1);
+    if(oldIndex>=0) locationSelect.remove(oldIndex);
+    closeModal();
+    if(locationSelect.options.length){
+      locationSelect.selectedIndex=Math.min(oldIndex,locationSelect.options.length-1);
+      showSelectedLocation();
+    }else{
+      clearSheet();
+    }
+  });
+  cancelBtn.addEventListener('click',closeModal);
+  blockedOk.addEventListener('click',closeModal);
+  modal.addEventListener('click',function(event){ if(event.target===modal) closeModal(); });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+})();
+</script>
+<script>
+/* V134: Add Tag always starts with all alarm checkboxes off */
+(function(){
+  const addAction=document.getElementById('tagActionAdd');
+  if(!addAction) return;
+  const pairs=[
+    ['tagAddHCheck','tagAddH'],
+    ['tagAddHHCheck','tagAddHH'],
+    ['tagAddLCheck','tagAddL'],
+    ['tagAddLLCheck','tagAddLL']
+  ];
+  addAction.addEventListener('click',function(){
+    setTimeout(function(){
+      pairs.forEach(function(pair){
+        const check=document.getElementById(pair[0]);
+        const input=document.getElementById(pair[1]);
+        if(check){
+          check.checked=false;
+          check.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+        if(input){
+          input.value='';
+          input.disabled=true;
+          input.classList.remove('alarm-enabled');
+        }
+      });
+    },20);
+  });
+})();
+</script>
+<style>
+/* V136: Search Tag dialog */
+.tag-search-card{width:min(380px,calc(100vw - 28px))}
+.tag-search-tools{display:flex;gap:6px;align-items:center;margin-top:7px}
+.tag-wildcard-btn{min-width:42px;padding:8px 12px;border:1px solid #7D97AB;border-radius:8px;background:#fff;color:#33424c;font-weight:700}
+.tag-search-examples{font-size:11px;color:#667782;margin-left:3px}
+.tag-search-results{display:grid;gap:6px;max-height:230px;overflow:auto;margin-top:10px}
+.tag-search-result{width:100%;min-height:36px;text-align:left;border:1px solid #d8e4ef;border-radius:9px;background:#f8fbfd;color:#26343d;padding:8px 10px}
+.tag-search-empty{font-size:13px;color:#667782;padding:10px 2px}
+.tag-search-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+</style>
+<div class='vc-modal-overlay' id='tagSearchModal' aria-hidden='true'>
+  <div class='vc-modal-card tag-search-card' role='dialog' aria-modal='true' aria-labelledby='tagSearchTitle'>
+    <div class='vc-modal-title' id='tagSearchTitle'>Search Tag</div>
+    <div class='vc-modal-sub'>Search within selected Location</div>
+    <input class='vc-modal-field' id='tagSearchInput' type='text' autocomplete='off' placeholder='Search Tag'>
+    <div class='tag-search-tools'>
+      <button class='tag-wildcard-btn' id='tagWildcardStar' type='button'>*</button>
+      <span class='tag-search-examples'>Press * to use it as a wildcard in the search box.</span>
+    </div>
+    <div class='tag-search-results' id='tagSearchResults'></div>
+    <div class='tag-search-footer'>
+      <button class='vc-modal-btn vc-modal-ok' id='tagSearchAdd' type='button'>Add Tag</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='tagSearchCancel' type='button'>Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V136: live Tag search with * and % wildcards */
+(function(){
+  const actionBtn=document.getElementById('tagActionSearch');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const modal=document.getElementById('tagSearchModal');
+  const input=document.getElementById('tagSearchInput');
+  const results=document.getElementById('tagSearchResults');
+  const starBtn=document.getElementById('tagWildcardStar');
+  const addBtn=document.getElementById('tagSearchAdd');
+  const cancelBtn=document.getElementById('tagSearchCancel');
+  const hiddenAddBtn=document.querySelector('.tag-add-btn');
+  const locationSelect=document.querySelector('.loc-select');
+  if(!actionBtn||!modal||!input||!results||!starBtn||!addBtn||!cancelBtn||!locationSelect)return;
+  function activeLocation(){
+    const db=window.vaagenDatabase;
+    if(!db||!Array.isArray(db.locations))return null;
+    const name=String(locationSelect.value||'').trim().toLowerCase();
+    return db.locations.find(function(location){return String(location.name||'').trim().toLowerCase()===name;})||null;
+  }
+  function closeActions(){if(actionsModal){actionsModal.classList.remove('is-open');actionsModal.setAttribute('aria-hidden','true');}}
+  function openSearch(){closeActions();input.value='';modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');render();setTimeout(function(){input.focus();},30);}
+  function closeSearch(){modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');}
+  function escapeRegex(value){return value.replace(/[\\^$.*+?()[\]{}|]/g,'\\$&');}
+  function wildcardRegex(query){
+    const hasWildcard=/[*]/.test(query);
+    const pattern=query.split(/([*])/).map(function(part){return part==='*'?'.*':escapeRegex(part);}).join('');
+    return new RegExp(hasWildcard?'^'+pattern+'$':pattern,'i');
+  }
+  function setValue(element,value){if(!element)return;element.value=value==null?'':String(value);element.dispatchEvent(new Event('input',{bubbles:true}));element.dispatchEvent(new Event('change',{bubbles:true}));}
+  function showTag(item){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),item.tag);setValue(document.querySelector('.des-row input'),item.description);setValue(document.querySelector('.unit-input'),item.unit);setValue(document.querySelector('.lrv-block input'),item.lrv);setValue(document.querySelector('.urv-block input'),item.urv);setValue(alarms[0],item.h);setValue(alarms[1],item.hh);setValue(alarms[2],item.l);setValue(alarms[3],item.ll);
+  }
+  function render(){
+    const location=activeLocation();const tags=location&&Array.isArray(location.tags)?location.tags:[];const query=input.value.trim();let matches=tags;
+    if(query){let regex;try{regex=wildcardRegex(query);}catch(error){regex=null;}matches=regex?tags.filter(function(item){return regex.test(String(item.tag||''));}):[];}
+    results.replaceChildren();
+    if(!matches.length){const empty=document.createElement('div');empty.className='tag-search-empty';empty.textContent='No Tags found';results.appendChild(empty);addBtn.style.display='inline-block';return;}
+    addBtn.style.display='none';
+    matches.forEach(function(item){const button=document.createElement('button');button.className='tag-search-result';button.type='button';button.textContent=item.tag;button.addEventListener('click',function(){showTag(item);closeSearch();});results.appendChild(button);});
+  }
+  function insertWildcard(symbol){const start=input.selectionStart==null?input.value.length:input.selectionStart;const end=input.selectionEnd==null?start:input.selectionEnd;input.value=input.value.slice(0,start)+symbol+input.value.slice(end);input.setSelectionRange(start+1,start+1);input.focus();render();}
+  actionBtn.addEventListener('click',openSearch);input.addEventListener('input',render);starBtn.addEventListener('click',function(){insertWildcard('*');});
+  addBtn.addEventListener('click',function(){closeSearch();if(hiddenAddBtn)setTimeout(function(){hiddenAddBtn.click();},0);});cancelBtn.addEventListener('click',closeSearch);modal.addEventListener('click',function(event){if(event.target===modal)closeSearch();});document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal.classList.contains('is-open'))closeSearch();});
+})();
+</script>
+<style>
+/* V137: Delete Tag confirmation dialog */
+.delete-tag-card{width:min(350px,calc(100vw - 28px))}
+.delete-tag-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.delete-tag-ok{background:#A56C6C!important;color:#fff!important}
+</style>
+<div class='vc-modal-overlay' id='deleteTagModal' aria-hidden='true'>
+  <div class='vc-modal-card delete-tag-card' role='dialog' aria-modal='true' aria-labelledby='deleteTagTitle'>
+    <div class='vc-modal-title' id='deleteTagTitle'>Delete Tag</div>
+    <div class='vc-modal-sub' id='deleteTagMessage'></div>
+    <div class='delete-tag-actions'>
+      <button class='vc-modal-btn delete-tag-ok' id='deleteTagOk' type='button'>OK</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='deleteTagCancel' type='button'>Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V137: remove active Tag from selected Location */
+(function(){
+  const actionBtn=document.getElementById('tagActionDelete');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const modal=document.getElementById('deleteTagModal');
+  const message=document.getElementById('deleteTagMessage');
+  const okBtn=document.getElementById('deleteTagOk');
+  const cancelBtn=document.getElementById('deleteTagCancel');
+  const locationSelect=document.querySelector('.loc-select');
+  const mainTag=document.querySelector('.tag-row .toptag');
+  if(!actionBtn||!modal||!message||!okBtn||!cancelBtn||!locationSelect||!mainTag)return;
+  function activeLocation(){
+    const db=window.vaagenDatabase;
+    if(!db||!Array.isArray(db.locations))return null;
+    const name=String(locationSelect.value||'').trim().toLowerCase();
+    return db.locations.find(function(location){return String(location.name||'').trim().toLowerCase()===name;})||null;
+  }
+  function activeTagName(){return String(mainTag.value||'').trim();}
+  function closeActions(){if(actionsModal){actionsModal.classList.remove('is-open');actionsModal.setAttribute('aria-hidden','true');}}
+  function openDialog(){
+    const tag=activeTagName();const location=String(locationSelect.value||'').trim();
+    if(!tag||!location)return;
+    closeActions();message.textContent='Delete Tag “'+tag+'” from Location “'+location+'”?';modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');setTimeout(function(){okBtn.focus();},30);
+  }
+  function closeDialog(){modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');}
+  function setValue(element,value){if(!element)return;element.value=value==null?'':String(value);element.dispatchEvent(new Event('input',{bubbles:true}));element.dispatchEvent(new Event('change',{bubbles:true}));}
+  function clearSheet(){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(mainTag,'');setValue(document.querySelector('.des-row input'),'');setValue(document.querySelector('.unit-input'),'');setValue(document.querySelector('.lrv-block input'),'');setValue(document.querySelector('.urv-block input'),'');setValue(document.querySelector('.ra-block input'),'');alarms.forEach(function(input){setValue(input,'');});document.querySelectorAll('.tt td.ma').forEach(function(cell){cell.textContent='';});
+    const lastRow=document.querySelector('.cal table tr:last-child');if(lastRow)lastRow.querySelectorAll('td').forEach(function(cell,index){cell.textContent=index===0?'Unit':'';});const values=document.querySelector('.vals');if(values)values.textContent='';
+  }
+  function showTag(item){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(mainTag,item.tag);setValue(document.querySelector('.des-row input'),item.description);setValue(document.querySelector('.unit-input'),item.unit);setValue(document.querySelector('.lrv-block input'),item.lrv);setValue(document.querySelector('.urv-block input'),item.urv);setValue(alarms[0],item.h);setValue(alarms[1],item.hh);setValue(alarms[2],item.l);setValue(alarms[3],item.ll);
+  }
+  actionBtn.addEventListener('click',openDialog);
+  okBtn.addEventListener('click',function(){
+    const location=activeLocation();const tag=activeTagName();
+    if(!location||!Array.isArray(location.tags)||!tag){closeDialog();return;}
+    const index=location.tags.findIndex(function(item){return String(item.tag||'').trim().toLowerCase()===tag.toLowerCase();});
+    if(index>=0)location.tags.splice(index,1);
+    closeDialog();
+    if(location.tags.length)showTag(location.tags[0]);else clearSheet();
+  });
+  cancelBtn.addEventListener('click',closeDialog);
+  modal.addEventListener('click',function(event){if(event.target===modal)closeDialog();});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal.classList.contains('is-open'))closeDialog();});
+})();
+</script>
+<style>
+/* V138: print current main sheet on one portrait A4 page */
+@page{size:A4 portrait;margin:12mm}
+@media print{
+  html,body{width:100%!important;min-height:0!important;margin:0!important;padding:0!important;background:#fff!important}
+  body>*:not(.app){display:none!important}
+  .vc-modal-overlay{display:none!important}
+  .app{display:block!important;position:static!important;width:100%!important;max-width:430px!important;margin:0 auto!important;padding:12px!important;box-shadow:none!important;border-radius:0!important;background:#fff!important;break-inside:avoid!important;page-break-inside:avoid!important}
+}
+.print-tag-card{width:min(340px,calc(100vw - 28px))}
+.print-tag-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+</style>
+<div class='vc-modal-overlay' id='printTagModal' aria-hidden='true'>
+  <div class='vc-modal-card print-tag-card' role='dialog' aria-modal='true' aria-labelledby='printTagTitle'>
+    <div class='vc-modal-title' id='printTagTitle'>Print Tag</div>
+    <div class='vc-modal-sub'>Print the current Tag?</div>
+    <div class='print-tag-actions'>
+      <button class='vc-modal-btn vc-modal-ok' id='printTagOk' type='button'>OK</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='printTagCancel' type='button'>Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+/* V138: confirm and print the current main sheet */
+(function(){
+  const actionBtn=document.getElementById('tagActionPrint');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const modal=document.getElementById('printTagModal');
+  const okBtn=document.getElementById('printTagOk');
+  const cancelBtn=document.getElementById('printTagCancel');
+  if(!actionBtn||!modal||!okBtn||!cancelBtn)return;
+  function closeActions(){if(actionsModal){actionsModal.classList.remove('is-open');actionsModal.setAttribute('aria-hidden','true');}}
+  function openDialog(){closeActions();modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');setTimeout(function(){okBtn.focus();},30);}
+  function closeDialog(){modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');}
+  actionBtn.addEventListener('click',openDialog);
+  okBtn.addEventListener('click',function(){closeDialog();setTimeout(function(){window.print();},30);});
+  cancelBtn.addEventListener('click',closeDialog);
+  modal.addEventListener('click',function(event){if(event.target===modal)closeDialog();});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal.classList.contains('is-open'))closeDialog();});
+})();
+</script>
+<style>
+/* V139: Print All Tags confirmation and landscape report */
+.print-all-card{width:min(340px,calc(100vw - 28px))}
+.print-all-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+#printAllReport{display:none}
+@media print{
+  body.print-all-mode .app{display:none!important}
+  body.print-all-mode>*:not(#printAllReport){display:none!important}
+  body.print-all-mode #printAllReport{display:block!important;width:100%!important}
+  body.print-all-mode #printAllReport table{width:auto;max-width:100%;margin:0 auto;border-collapse:collapse;table-layout:auto;font-size:7.5pt}
+  body.print-all-mode #printAllReport thead{display:table-header-group}
+  body.print-all-mode #printAllReport th,
+  body.print-all-mode #printAllReport td{border:1px solid #444;padding:3px 4px;text-align:left;vertical-align:top;white-space:nowrap}
+  body.print-all-mode #printAllReport th{background:#e8edf0;font-weight:700}
+  body.print-all-mode #printAllReport tr{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+<div class='vc-modal-overlay' id='printAllModal' aria-hidden='true'>
+  <div class='vc-modal-card print-all-card' role='dialog' aria-modal='true' aria-labelledby='printAllTitle'>
+    <div class='vc-modal-title' id='printAllTitle'>Print All Tags</div>
+    <div class='vc-modal-sub' id='printAllMessage'></div>
+    <div class='print-all-actions'>
+      <button class='vc-modal-btn vc-modal-ok' id='printAllOk' type='button'>OK</button>
+      <button class='vc-modal-btn vc-modal-cancel' id='printAllCancel' type='button'>Cancel</button>
+    </div>
+  </div>
+</div>
+<div id='printAllReport' aria-hidden='true'></div>
+<script>
+/* V139: build and print a bordered landscape database table */
+(function(){
+  const actionBtn=document.getElementById('tagActionPrintAll');
+  const actionsModal=document.getElementById('tagActionsModal');
+  const modal=document.getElementById('printAllModal');
+  const okBtn=document.getElementById('printAllOk');
+  const cancelBtn=document.getElementById('printAllCancel');
+  const report=document.getElementById('printAllReport');
+  const message=document.getElementById('printAllMessage');
+  const locationSelect=document.querySelector('.loc-select');
+  if(!actionBtn||!modal||!okBtn||!cancelBtn||!report||!message||!locationSelect)return;
+  function closeActions(){if(actionsModal){actionsModal.classList.remove('is-open');actionsModal.setAttribute('aria-hidden','true');}}
+  function selectedLocationName(){return String(locationSelect.value||'').trim();}
+  function selectedDatabaseLocation(){
+    const db=window.vaagenDatabase;
+    if(!db||!Array.isArray(db.locations))return null;
+    const name=selectedLocationName().toLowerCase();
+    return db.locations.find(function(location){return String(location.name||'').trim().toLowerCase()===name;})||null;
+  }
+  function openDialog(){
+    closeActions();
+    message.textContent='Print all Tags from Location “'+selectedLocationName()+'”?';
+    modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');setTimeout(function(){okBtn.focus();},30);
+  }
+  function closeDialog(){modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');}
+  function parseNo(value){const n=parseFloat(String(value==null?'':value).replace(/\s/g,'').replace(',','.'));return Number.isFinite(n)?n:NaN;}
+  function formatNo(value){return Number.isFinite(value)?value.toFixed(2).replace('.',','):'';}
+  function formatWhole(value){const number=parseNo(value);return Number.isFinite(number)?String(Math.round(number)):'';}
+  function alarmMA(value,lrv,ra){const pv=parseNo(value);return String(value==null?'':value).trim()!==''&&Number.isFinite(pv)&&Number.isFinite(lrv)&&Number.isFinite(ra)&&ra!==0?formatNo(4+((pv-lrv)/ra)*16):'';}
+  function td(row,value){const cell=document.createElement('td');cell.textContent=value==null?'':String(value);row.appendChild(cell);}
+  function buildReport(){
+    report.replaceChildren();
+    const style=document.createElement('style');style.textContent='@page{size:A4 landscape;margin:8mm}';report.appendChild(style);
+    const table=document.createElement('table');
+    const thead=document.createElement('thead');const head=document.createElement('tr');
+    ['Location','Tag','Description','Unit','LRV','URV','RA','0%','0% mA','25%','25% mA','50%','50% mA','75%','75% mA','100%','100% mA','H','H mA','HH','HH mA','L','L mA','LL','LL mA'].forEach(function(text){const th=document.createElement('th');th.textContent=text;head.appendChild(th);});
+    thead.appendChild(head);table.appendChild(thead);
+    const tbody=document.createElement('tbody');
+    const location=selectedDatabaseLocation();
+    const tags=location&&Array.isArray(location.tags)?location.tags:[];
+    tags.forEach(function(item){
+      const lrv=parseNo(item.lrv);const urv=parseNo(item.urv);const ra=Number.isFinite(lrv)&&Number.isFinite(urv)?urv-lrv:NaN;
+      const row=document.createElement('tr');
+      [location.name,item.tag,item.description,item.unit,formatWhole(item.lrv),formatWhole(item.urv),Number.isFinite(ra)?String(Math.round(ra)):'',Number.isFinite(lrv)?formatNo(lrv):'','4,00',Number.isFinite(lrv)&&Number.isFinite(ra)?formatNo(lrv+ra*0.25):'','8,00',Number.isFinite(lrv)&&Number.isFinite(ra)?formatNo(lrv+ra*0.50):'','12,00',Number.isFinite(lrv)&&Number.isFinite(ra)?formatNo(lrv+ra*0.75):'','16,00',Number.isFinite(urv)?formatNo(urv):'','20,00',formatWhole(item.h),alarmMA(item.h,lrv,ra),formatWhole(item.hh),alarmMA(item.hh,lrv,ra),formatWhole(item.l),alarmMA(item.l,lrv,ra),formatWhole(item.ll),alarmMA(item.ll,lrv,ra)].forEach(function(value){td(row,value);});
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);report.appendChild(table);
+  }
+  function finishPrint(){document.body.classList.remove('print-all-mode');report.setAttribute('aria-hidden','true');}
+  actionBtn.addEventListener('click',openDialog);
+  okBtn.addEventListener('click',function(){closeDialog();buildReport();report.setAttribute('aria-hidden','false');document.body.classList.add('print-all-mode');setTimeout(function(){window.print();},40);});
+  cancelBtn.addEventListener('click',closeDialog);
+  modal.addEventListener('click',function(event){if(event.target===modal)closeDialog();});
+  document.addEventListener('keydown',function(event){if(event.key==='Escape'&&modal.classList.contains('is-open'))closeDialog();});
+  window.addEventListener('afterprint',finishPrint);
+})();
+</script>
+<script>
+/* V145: persistent local database for test phase */
+(function(){
+  const STORAGE_KEY='VaagenCal_V22_database';
+  const locationSelect=document.querySelector('.loc-select');
+
+  function saveDatabase(){
+    try{
+      if(window.vaagenDatabase){
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(window.vaagenDatabase));
+      }
+    }catch(error){
+      console.error('VaagenCal database save failed',error);
+    }
+  }
+
+  function loadDatabase(){
+    try{
+      const saved=localStorage.getItem(STORAGE_KEY);
+      if(!saved) return false;
+      const parsed=JSON.parse(saved);
+      if(!parsed || !Array.isArray(parsed.locations)) return false;
+      window.vaagenDatabase=parsed;
+      return true;
+    }catch(error){
+      console.error('VaagenCal database load failed',error);
+      return false;
+    }
+  }
+
+  function setValue(element,value){
+    if(!element) return;
+    element.value=value===undefined || value===null ? '' : String(value);
+    element.dispatchEvent(new Event('input',{bubbles:true}));
+    element.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+
+  function clearSheet(){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),'');
+    setValue(document.querySelector('.des-row input'),'');
+    setValue(document.querySelector('.unit-input'),'');
+    setValue(document.querySelector('.lrv-block input'),'');
+    setValue(document.querySelector('.urv-block input'),'');
+    setValue(document.querySelector('.ra-block input'),'');
+    alarms.forEach(function(input){setValue(input,'');});
+    document.querySelectorAll('.tt td.ma').forEach(function(cell){cell.textContent='';});
+    const lastRow=document.querySelector('.cal table tr:last-child');
+    if(lastRow) lastRow.querySelectorAll('td').forEach(function(cell,index){cell.textContent=index===0?'Unit':'';});
+    const values=document.querySelector('.vals');
+    if(values) values.textContent='';
+  }
+
+  function showTag(item){
+    const alarms=document.querySelectorAll('.tt td.val input');
+    setValue(document.querySelector('.tag-row .toptag'),item.tag);
+    setValue(document.querySelector('.des-row input'),item.description);
+    setValue(document.querySelector('.unit-input'),item.unit);
+    setValue(document.querySelector('.lrv-block input'),item.lrv);
+    setValue(document.querySelector('.urv-block input'),item.urv);
+    setValue(alarms[0],item.h);
+    setValue(alarms[1],item.hh);
+    setValue(alarms[2],item.l);
+    setValue(alarms[3],item.ll);
+  }
+
+  function rebuildLocationList(){
+    if(!locationSelect || !window.vaagenDatabase || !Array.isArray(window.vaagenDatabase.locations)) return;
+    const previous=String(locationSelect.value||'');
+    locationSelect.replaceChildren();
+    window.vaagenDatabase.locations.forEach(function(location){
+      const option=document.createElement('option');
+      option.value=location.name;
+      option.textContent=location.name;
+      locationSelect.appendChild(option);
+    });
+    if(previous && window.vaagenDatabase.locations.some(function(location){return location.name===previous;})){
+      locationSelect.value=previous;
+    }else if(locationSelect.options.length){
+      locationSelect.selectedIndex=0;
+    }
+  }
+
+  function showSelectedLocation(){
+    if(!locationSelect || !window.vaagenDatabase || !Array.isArray(window.vaagenDatabase.locations)) return;
+    const name=String(locationSelect.value||'').trim().toLowerCase();
+    const location=window.vaagenDatabase.locations.find(function(item){
+      return String(item.name||'').trim().toLowerCase()===name;
+    });
+    if(location && Array.isArray(location.tags) && location.tags.length) showTag(location.tags[0]);
+    else clearSheet();
+  }
+
+  const restored=loadDatabase();
+  if(restored){
+    rebuildLocationList();
+    showSelectedLocation();
+  }else{
+    rebuildLocationList();
+    showSelectedLocation();
+    saveDatabase();
+  }
+
+  ['locAddOk','tagAddOk','deleteLocationConfirm','deleteTagOk'].forEach(function(id){
+    const button=document.getElementById(id);
+    if(button) button.addEventListener('click',function(){setTimeout(saveDatabase,250);});
+  });
+
+  window.addEventListener('beforeunload',saveDatabase);
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden') saveDatabase();
+  });
+})();
+</script>
+<style>
+/* V146: dialog cards remain visually fixed during pointer movement */
+.vc-modal-card{
+  touch-action:pan-x pan-y!important;
+  cursor:default!important;
+}
+.vc-modal-overlay.is-open .vc-modal-card{
+  transform:translateY(0) scale(1)!important;
+  transition:none!important;
+}
+</style>
+<script>
+/* V146: dialogs close only through their own action buttons */
+(function(){
+  document.querySelectorAll('.vc-modal-overlay').forEach(function(modal){
+    ['click','pointerup'].forEach(function(type){
+      modal.addEventListener(type,function(event){
+        if(event.target===modal){
+          event.preventDefault();
+          event.stopImmediatePropagation();
+        }
+      },true);
+    });
+  });
+})();
+</script>
+<style>
+/* V148: Description and Unit borders match LRV/URV/RA */
+.des-row input,
+.unit-input{
+  border-color:#efe4a8!important;
+}
+</style>
+<style>
+/* V149: specific Unit selector matches LRV/URV/RA border */
+.instrument .align-left-panel .unit-labelbox.unit-input{
+  border-color:#efe4a8!important;
+}
+</style>
+<style>
+/* V150: clean position swap, no overlap */
+.loc-row .tag-help-btn{
+  position:static!important;
+  right:auto!important;
+  top:auto!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  height:40px!important;
+}
+.tag-row .tag-del-btn{
+  position:static!important;
+  right:auto!important;
+  top:auto!important;
+  transform:none!important;
+  flex:0 0 auto!important;
+}
+</style>
+<script>
+/* V150: Help after Location plus; Tag Actions after next arrow */
+(function(){
+  const addBtn=document.querySelector('.loc-add-btn');
+  const helpBtn=document.querySelector('.tag-help-btn');
+  const nextBtn=document.querySelector('.tag-search-btn');
+  const moreBtn=document.querySelector('.tag-del-btn');
+  if(!addBtn||!helpBtn||!nextBtn||!moreBtn)return;
+  addBtn.insertAdjacentElement('afterend',helpBtn);
+  nextBtn.insertAdjacentElement('afterend',moreBtn);
+})();
+</script>
+<style>
+/* V152: keep Tag plate centered; move arrows close without affecting layout */
+.tag-row .loc-edit-btn{
+  left:0!important;
+  transform:translateX(52px)!important;
+}
+.tag-row .tag-search-btn{
+  left:0!important;
+  transform:translateX(-24px)!important;
+}
+</style>
+<style>
+/* V153: move only the back arrow 4px right */
+.tag-row .loc-edit-btn{
+  transform:translateX(56px)!important;
+}
+</style>
+<style>
+/* V154: move only the Tag plate 6px right */
+.tag-row .toptag{
+  transform:translateX(6px)!important;
+}
+</style>
+<style>
+/* V155: move only the Tag plate another 4px right, 10px total */
+.tag-row .toptag{
+  transform:translateX(10px)!important;
+}
+</style>
+<style>
+/* V156: move only the Tag plate another 4px right, 14px total */
+.tag-row .toptag{
+  transform:translateX(14px)!important;
+}
+</style>
+<style>
+/* V157: move only the Tag plate another 1px right, 15px total */
+.tag-row .toptag{
+  transform:translateX(15px)!important;
+}
+</style>
+<style>
+/* V158: steel background on Tag-related navigation and actions buttons */
+.tag-row .loc-edit-btn,
+.tag-row .tag-search-btn,
+.tag-row .tag-del-btn{
+  background:
+    linear-gradient(180deg,#f4f6f7 0%,#d9dee1 48%,#eef1f2 100%)!important;
+  color:#444!important;
+  border:1px solid #8f9aa1!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(95,105,112,.22)!important;
+}
+</style>
+<style>
+/* V162: fixed full report width; Description uses remaining space */
+@media print{
+  body.print-all-mode #printAllReport table{
+    width:100%!important;
+    max-width:100%!important;
+    table-layout:auto!important;
+  }
+  body.print-all-mode #printAllReport th:nth-child(3),
+  body.print-all-mode #printAllReport td:nth-child(3){
+    width:100%!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+  body.print-all-mode #printAllReport th:not(:nth-child(3)),
+  body.print-all-mode #printAllReport td:not(:nth-child(3)){
+    width:1%!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
+<style>
+/* V163: alternating light gray data rows in Print All Tags */
+@media print{
+  body.print-all-mode #printAllReport tbody tr:nth-child(even) td{
+    background:#f1f3f4!important;
+  }
+  body.print-all-mode #printAllReport tbody tr:nth-child(odd) td{
+    background:#ffffff!important;
+  }
+}
+</style>
+<style>
+/* V164: force alternating row colors to print */
+@media print{
+  body.print-all-mode #printAllReport,
+  body.print-all-mode #printAllReport *{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+}
+</style>
+<style>
+/* V165: slightly darker alternating print rows */
+@media print{
+  body.print-all-mode #printAllReport tbody tr:nth-child(even) td{
+    background:#e2e5e7!important;
+  }
+}
+</style>
+<style>
+/* V166: all dialogs aligned near the top for mobile use */
+.vc-modal-overlay{
+  align-items:flex-start!important;
+  padding-top:max(18px,env(safe-area-inset-top))!important;
+  padding-bottom:18px!important;
+  overflow-y:auto!important;
+  box-sizing:border-box!important;
+}
+.vc-modal-overlay .vc-modal-card{
+  margin-top:0!important;
+  margin-bottom:18px!important;
+  max-height:calc(100dvh - 36px - env(safe-area-inset-top))!important;
+  overflow-y:auto!important;
+}
+</style>
+<style>
+/* V167: force every modal, including Tag Actions, near the top */
+html body .vc-modal-overlay,
+html body #tagActionsModal{
+  align-items:flex-start!important;
+  justify-content:center!important;
+  padding-top:max(18px,env(safe-area-inset-top))!important;
+  padding-bottom:18px!important;
+  overflow-y:auto!important;
+  box-sizing:border-box!important;
+}
+html body .vc-modal-overlay .vc-modal-card,
+html body #tagActionsModal .vc-modal-card{
+  margin-top:0!important;
+  margin-bottom:18px!important;
+  max-height:calc(100dvh - 36px - env(safe-area-inset-top))!important;
+  overflow-y:auto!important;
+}
+</style>
+<style>
+/* V169: Search Tag Cancel button at top right */
+#tagSearchModal .tag-search-card{position:relative!important;}
+#tagSearchModal #tagSearchCancel{
+  position:absolute!important;
+  top:12px!important;
+  right:12px!important;
+}
+#tagSearchModal #tagSearchTitle{padding-right:76px!important;}
+#tagSearchModal .tag-search-footer{
+  justify-content:flex-end!important;
+}
+</style>
+<script>
+/* V169: keep only Add Tag in the lower footer */
+(function(){
+  const card=document.querySelector('#tagSearchModal .tag-search-card');
+  const cancel=document.getElementById('tagSearchCancel');
+  if(card&&cancel)card.appendChild(cancel);
+})();
+</script>
+<style>
+/* V170: Help dialog with fixed Close button and scrollable content */
+.help-modal-card{width:min(390px,calc(100vw - 24px));padding:0!important;overflow:hidden!important;position:relative!important}
+.help-modal-header{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;background:#fff;border-bottom:1px solid #d8e4ef}
+.help-modal-title{font-size:17px;font-weight:700;color:#26343d}
+.help-modal-close{flex-shrink:0}
+.help-modal-body{max-height:calc(100dvh - 105px);overflow-y:auto;padding:14px;box-sizing:border-box}
+.help-menu{display:grid;gap:8px}
+.help-menu-btn{width:100%;min-height:38px;border:0;border-radius:10px;background:#86a1b4;color:#fff;font-size:14px;padding:9px 12px;text-align:left}
+.help-content{display:none;margin-top:12px;padding:12px;border:1px solid #d8e4ef;border-radius:10px;background:#f8fbfd;color:#33424c;font-size:13px;line-height:1.45}
+.help-content.is-visible{display:block}
+.help-content h3{font-size:15px;margin:0 0 8px;color:#26343d}
+.help-content p{margin:0 0 8px}
+.help-content ul{margin:0;padding-left:19px}
+.help-content li{margin-bottom:5px}
+</style>
+<div class='vc-modal-overlay' id='helpModal' aria-hidden='true'>
+  <div class='vc-modal-card help-modal-card' role='dialog' aria-modal='true' aria-labelledby='helpModalTitle'>
+    <div class='help-modal-header'>
+      <div class='help-modal-title' id='helpModalTitle'>VaagenCal Help</div>
+      <button class='vc-modal-btn vc-modal-cancel help-modal-close' id='helpModalClose' type='button'>Close</button>
+    </div>
+    <div class='help-modal-body'>
+      <div class='help-menu'>
+        <button class='help-menu-btn' data-help-target='helpAbout' type='button'>About VaagenCal</button>
+        <button class='help-menu-btn' data-help-target='helpFunctions' type='button'>Functions</button>
+        <button class='help-menu-btn' data-help-target='helpData' type='button'>Add and Edit Data</button>
+        <button class='help-menu-btn' data-help-target='helpSearch' type='button'>Search and Navigation</button>
+        <button class='help-menu-btn' data-help-target='helpPrint' type='button'>Print</button>
+      </div>
+      <section class='help-content' id='helpAbout'>
+        <h3>About VaagenCal</h3>
+        <p>VaagenCal displays instrument Tags and calculates values for a 4–20 mA signal range.</p>
+        <p>Select a Location and Tag to view the saved Description, Unit, LRV, URV, RA and alarm values.</p>
+        <p><strong>Important:</strong> To keep your saved Locations and Tags, use VaagenCal on the same device and in the same browser. Data is stored locally and is not synchronized between devices.</p>
+      </section>
+      <section class='help-content' id='helpFunctions'>
+        <h3>Functions</h3>
+        <ul>
+          <li>The Location list selects the active Location.</li>
+          <li>The steel Tag plate displays the active Tag.</li>
+          <li>Press the left or right arrow once to move one Tag.</li>
+          <li>Press and hold the left or right arrow for 0.5 seconds to browse Tags automatically.</li>
+          <li>The three-dot button opens Tag Actions.</li>
+          <li>RA is calculated from URV minus LRV.</li>
+          <li>The tables show percentage, process and mA values.</li>
+          <li>The slider and minus/plus buttons simulate a 4–20 mA value.</li>
+          <li>Press minus or plus once for one step, or press and hold for continuous adjustment.</li>
+        </ul>
+      </section>
+      <section class='help-content' id='helpData'>
+        <h3>Add and Edit Data</h3>
+        <ul>
+          <li>Use the plus button beside Location to add a Location.</li>
+          <li>Use Tag Actions to add, edit or delete a Tag.</li>
+          <li>A Location can only be deleted after all Tags under that Location are deleted.</li>
+          <li>Save stores the entered Tag values in the selected Location.</li>
+        </ul>
+      </section>
+      <section class='help-content' id='helpSearch'>
+        <h3>Search and Navigation</h3>
+        <ul>
+          <li>Search Tag searches within the selected Location.</li>
+          <li>Press * to use it as a wildcard in the search box.</li>
+          <li>Select a result to display that Tag on the main page.</li>
+          <li>Tags are shown in natural order, with numbers first and then A–Z.</li>
+        </ul>
+      </section>
+      <section class='help-content' id='helpPrint'>
+        <h3>Print</h3>
+        <ul>
+          <li>Print Tag prints the current main page on portrait A4.</li>
+          <li>Print All Tags prints the Tags for the selected Location as a landscape A4 table.</li>
+          <li>The report includes saved values, calculated RA, percentage values and mA values.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</div>
+<script>
+/* V170: Help button opens the Help dialog */
+(function(){
+  const helpBtn=document.querySelector('.tag-help-btn');
+  const modal=document.getElementById('helpModal');
+  const closeBtn=document.getElementById('helpModalClose');
+  const body=document.querySelector('#helpModal .help-modal-body');
+  const menuButtons=document.querySelectorAll('#helpModal .help-menu-btn');
+  const contents=document.querySelectorAll('#helpModal .help-content');
+  if(!helpBtn||!modal||!closeBtn||!body)return;
+  function hideContents(){contents.forEach(function(content){content.classList.remove('is-visible');});}
+  function openHelp(){hideContents();body.scrollTop=0;modal.classList.add('is-open');modal.setAttribute('aria-hidden','false');setTimeout(function(){closeBtn.focus();},30);}
+  function closeHelp(){modal.classList.remove('is-open');modal.setAttribute('aria-hidden','true');helpBtn.focus();}
+  helpBtn.addEventListener('click',openHelp);
+  closeBtn.addEventListener('click',closeHelp);
+  menuButtons.forEach(function(button){
+    button.addEventListener('click',function(){
+      const target=document.getElementById(button.getAttribute('data-help-target'));
+      hideContents();
+      if(target){target.classList.add('is-visible');target.scrollIntoView({block:'nearest'});}
+    });
+  });
+})();
+</script>
+<style>
+/* V174: prevent iPhone input zoom in Add/Edit Tag */
+#tagAddModal .tag-form-input{
+  font-size:16px!important;
+}
+#tagAddModal .tag-modal-card{
+  transform:none!important;
+}
+</style>
+<script>
+/* V174: Done/Enter closes keyboard only; form remains open */
+(function(){
+  const modal=document.getElementById('tagAddModal');
+  if(!modal)return;
+  const textIds=['tagAddTag','tagAddDes','tagAddUnit'];
+  const numberIds=['tagAddLRV','tagAddURV','tagAddH','tagAddHH','tagAddL','tagAddLL'];
+  textIds.forEach(function(id){
+    const input=document.getElementById(id);
+    if(!input)return;
+    input.setAttribute('inputmode','text');
+    input.setAttribute('enterkeyhint','done');
+  });
+  numberIds.forEach(function(id){
+    const input=document.getElementById(id);
+    if(!input)return;
+    input.setAttribute('inputmode','decimal');
+    input.setAttribute('enterkeyhint','done');
+  });
+  modal.querySelectorAll('.tag-form-input').forEach(function(input){
+    input.addEventListener('keydown',function(event){
+      if(event.key==='Enter'){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        input.blur();
+      }
+    },true);
+  });
+})();
+</script>
+<style>
+/* V176: responsive Tag navigation on narrow mobile screens */
+@media (max-width:480px){
+  .tag-row{
+    display:grid!important;
+    grid-template-columns:42px minmax(0,1fr) 42px 42px!important;
+    column-gap:6px!important;
+    align-items:center!important;
+  }
+  .tag-row .loc-edit-btn,
+  .tag-row .tag-search-btn,
+  .tag-row .tag-del-btn,
+  .tag-row .toptag{
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    top:auto!important;
+    transform:none!important;
+    margin:0!important;
+  }
+  .tag-row .loc-edit-btn{grid-column:1!important;}
+  .tag-row .toptag{
+    grid-column:2!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  .tag-row .tag-search-btn{grid-column:3!important;}
+  .tag-row .tag-del-btn{grid-column:4!important;}
+}
+</style>
+<style>
+/* V178: scale the complete PC top layout proportionally on mobile */
+.vaagen-top-viewport,.vaagen-top-layout{box-sizing:border-box}
+@media (max-width:480px){
+  .vaagen-top-viewport{width:100%;overflow:visible;position:relative}
+  .vaagen-top-layout{width:430px;position:relative;transform-origin:top left}
+  .vaagen-top-layout .loc-row,
+  .vaagen-top-layout .tag-row{display:flex!important;grid-template-columns:none!important;column-gap:normal!important;gap:6px!important}
+  .vaagen-top-layout .tag-row .loc-edit-btn{position:relative!important;left:0!important;transform:translateX(56px)!important;margin:0!important}
+  .vaagen-top-layout .tag-row .toptag{position:static!important;transform:translateX(15px)!important;flex:0 0 44.352%!important;width:44.352%!important;max-width:44.352%!important;min-width:0!important;margin-left:auto!important;margin-right:auto!important}
+  .vaagen-top-layout .tag-row .tag-search-btn{position:relative!important;left:0!important;transform:translateX(-24px)!important;margin:0!important}
+  .vaagen-top-layout .tag-row .tag-del-btn{position:static!important;transform:none!important;margin:0!important}
+}
+</style>
+<script>
+/* V178: keep only the top controls proportional to the approved PC layout */
+(function(){
+  const app=document.querySelector('.app');
+  const logo=document.querySelector('.fv-logo');
+  const locRow=document.querySelector('.loc-row');
+  const tagRow=document.querySelector('.tag-row');
+  if(!app||!logo||!locRow||!tagRow)return;
+  const viewport=document.createElement('div');
+  const layout=document.createElement('div');
+  viewport.className='vaagen-top-viewport';
+  layout.className='vaagen-top-layout';
+  app.insertBefore(viewport,locRow);
+  viewport.appendChild(layout);
+  layout.appendChild(logo);
+  layout.appendChild(locRow);
+  layout.appendChild(tagRow);
+  function sizeTop(){
+    if(window.matchMedia('(max-width:480px)').matches){
+      layout.style.width='430px';
+      layout.style.transform='none';
+      const naturalHeight=layout.scrollHeight;
+      const scale=Math.min(1,viewport.clientWidth/430);
+      layout.style.transform='scale('+scale+')';
+      viewport.style.height=Math.ceil(naturalHeight*scale)+'px';
+    }else{
+      layout.style.width='';
+      layout.style.transform='';
+      viewport.style.height='';
+    }
+  }
+  sizeTop();
+  window.addEventListener('resize',sizeTop);
+  window.addEventListener('orientationchange',function(){setTimeout(sizeTop,80);});
+})();
+</script>
+<style>
+/* V179: bind logo position to the scaled top layout */
+.vaagen-top-layout{position:relative!important}
+.vaagen-top-layout .fv-logo{
+  position:absolute!important;
+  left:16px!important;
+  top:29px!important;
+  transform:none!important;
+  transform-origin:top left!important;
+}
+@media (max-width:480px){
+  .vaagen-top-layout .fv-logo{
+    width:42px!important;
+    height:42px!important;
+  }
+}
+</style>
+</body></html>
